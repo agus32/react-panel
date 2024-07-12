@@ -1,142 +1,91 @@
 import React, { useState } from 'react';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Input, Button, Select, TimePicker } from 'antd';
+import { actions } from '../config';
 
-export const ActionForm = ({ actions }) => {
-  const [formData, setFormData] = useState({
-    field: '',
-    condition: '',
-    value: '',
-    action: '',
-    interval: '0h1m0s',
-    message: ''
-  });
+const { Option } = Select;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+export const ActionForm = () => {
+  const [conditions, setConditions] = useState([{ id: 1, actions: [{ id: 1 }] }]);
+  const [nextConditionId, setNextConditionId] = useState(2);
+  const [nextActionId, setNextActionId] = useState(2);
+
+  const addCondition = () => {
+    setConditions([...conditions, { id: nextConditionId, actions: [{ id: nextActionId }] }]);
+    setNextConditionId(nextConditionId + 1);
+    setNextActionId(nextActionId + 1);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+  const removeCondition = (id) => {
+    setConditions(conditions.filter(condition => condition.id !== id));
+  };
+
+  const addAction = (conditionId) => {
+    setConditions(conditions.map(condition => {
+      if (condition.id === conditionId) {
+        return { ...condition, actions: [...condition.actions, { id: nextActionId }] };
+      }
+      return condition;
+    }));
+    setNextActionId(nextActionId + 1);
+  };
+
+  const removeAction = (conditionId, actionId) => {
+    setConditions(conditions.map(condition => {
+      if (condition.id === conditionId) {
+        return { ...condition, actions: condition.actions.filter(action => action.id !== actionId) };
+      }
+      return condition;
+    }));
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Row>
-        <Col>
-          <Form.Group controlId="field">
-            <Form.Label>Field</Form.Label>
-            <Form.Control
-              as="select"
-              name="field"
-              value={formData.field}
-              onChange={handleChange}
-            >
-              <option value="">Select field</option>
-              {/* Map through actions fields */}
-              {actions.fields.map((field, idx) => (
-                <option key={idx} value={field}>
-                  {field}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-        </Col>
-
-        <Col>
-          <Form.Group controlId="condition">
-            <Form.Label>Condition</Form.Label>
-            <Form.Control
-              as="select"
-              name="condition"
-              value={formData.condition}
-              onChange={handleChange}
-            >
-              <option value="">Select condition</option>
-              {actions.conditions.map((condition, idx) => (
-                <option key={idx} value={condition}>
-                  {condition}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-        </Col>
-
-        <Col>
-          <Form.Group controlId="value">
-            <Form.Label>Value</Form.Label>
-            <Form.Control
-              type="text"
-              name="value"
-              value={formData.value}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col>
-          <Form.Group controlId="action">
-            <Form.Label>Action</Form.Label>
-            <Form.Control
-              as="select"
-              name="action"
-              value={formData.action}
-              onChange={handleChange}
-            >
-              <option value="">Select action</option>
-              {actions.actions.map((action, idx) => (
-                <option key={idx} value={action.name}>
-                  {action.label}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-        </Col>
-
-        <Col>
-          <Form.Group controlId="interval">
-            <Form.Label>Interval</Form.Label>
-            <Form.Control
-              type="text"
-              name="interval"
-              value={formData.interval}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-
-      <Form.Group controlId="message">
-        <Form.Label>Message</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={3}
-          name="message"
-          value={formData.message}
-          onChange={handleChange}
-        />
-      </Form.Group>
-
-      <Button variant="primary" type="submit">
-        Submit
-      </Button>
-      <Button variant="danger" onClick={() => setFormData({
-          field: '',
-          condition: '',
-          value: '',
-          action: '',
-          interval: '0h1m0s',
-          message: ''
-        })}>
-        Delete condition
-      </Button>
+    <Form layout="vertical" style={{ marginTop: '20px' }}>
+      <Form.Item label="Nombre">
+        <Input placeholder="Nombre" />
+      </Form.Item>
+      
+      {conditions.map(condition => (
+        <div key={condition.id} style={{ marginBottom: '20px', border: '1px solid #ddd', padding: '10px' }}>
+          <Form.Item label={`Condition ${condition.id}`}>
+            <Input.Group compact>
+              <Select defaultValue={actions.fields[0]} style={{ width: '20%' }}>
+                {actions.fields.map(field => (
+                  <Option key={field} value={field}>{field}</Option>
+                ))}
+              </Select>
+              <Select defaultValue={actions.conditions[0]} style={{ width: '20%' }}>
+                {actions.conditions.map(condition => (
+                  <Option key={condition} value={condition}>{condition}</Option>
+                ))}
+              </Select>
+              <Input style={{ width: '40%' }} placeholder="value" />
+              <Button type="primary" danger onClick={() => removeCondition(condition.id)}>Delete condition</Button>
+            </Input.Group>
+          </Form.Item>
+          
+          {condition.actions.map(action => (
+            <div key={action.id} style={{ marginBottom: '10px' }}>
+              <Form.Item>
+                <Input.Group compact>
+                  <Select defaultValue={actions.actions[0].name} style={{ width: '30%' }}>
+                    {actions.actions.map(actionOption => (
+                      <Option key={actionOption.name} value={actionOption.name}>{actionOption.label}</Option>
+                    ))}
+                  </Select>
+                  <TimePicker minuteStep={15} secondStep={10} hourStep={1} />
+                  <Button type="primary" danger onClick={() => removeAction(condition.id, action.id)}>Delete action</Button>
+                </Input.Group>
+                <Input.TextArea style={{ width: '100%' }} placeholder="Details" />
+              </Form.Item>
+            </div>
+          ))}
+          
+          <Button type="primary" onClick={() => addAction(condition.id)}>+ New Action</Button>
+        </div>
+      ))}
+      
+      <Button type="primary" onClick={addCondition}>+ New Condition</Button>
+      <Button type="primary" style={{ marginTop: '20px', backgroundColor: '#008000', borderColor: '#008000',marginLeft:"5px" }}>Save Action</Button>
     </Form>
   );
 };
-
