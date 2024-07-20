@@ -54,19 +54,19 @@ export const fetchData = async (endpoint, method, body = null) => {
 
 
 
-export const GetCommunications = async (filter,page) => {
+export const GetCommunications = async (filter,page,pageSize) => {
   function toQueryParams(filter) {
     const params = new URLSearchParams();
   
     filter.fechaDesde && params.append('fecha_from', `${filter.fechaDesde.$y}-${String(filter.fechaDesde.$M + 1).padStart(2, '0')}-${String(filter.fechaDesde.$D).padStart(2, '0')}`);
     filter.fechaHasta && params.append('fecha_to', `${filter.fechaHasta.$y}-${String(filter.fechaHasta.$M + 1).padStart(2, '0')}-${String(filter.fechaHasta.$D).padStart(2, '0')}`);
-    filter.asesores.length && params.append('asesor_name', filter.asesores[0]);
-    filter.fuentes.length && params.append('fuente', filter.fuentes[0]);
+    filter.asesores.length && params.append('asesor_name', filter.asesores.join(','));
+    filter.fuentes.length && params.append('fuente', filter.fuentes.join(','));
     filter.nombre.length && params.append('nombre', filter.nombre);
     filter.telefono.length && params.append('telefono', filter.telefono);
-    // Se puede incluir un valor por defecto para page, si no está presente en el objeto
     page && params.append('page', page);
-  
+    pageSize && params.append('page_size', pageSize);
+    filter.is_new !== null && params.append('is_new', filter.is_new);
     return `?${params.toString()}`;
   }
   
