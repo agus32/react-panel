@@ -8,13 +8,14 @@ export const NavBar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <NavDropdown title="Acciones" id="basic-nav-dropdown">
+            <NavDropdown title="Acciones" id="basic-nav-dropdown" disabled>
               <NavDropdown.Item href="/acciones/nueva">Nueva Acción</NavDropdown.Item>
               <NavDropdown.Item href="/acciones">Acciones</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link href="/broadcast">Broadcast</Nav.Link>
+            <Nav.Link href="/broadcast" disabled>Broadcast</Nav.Link>
             <Nav.Link href="/comunicaciones">Comunicaciones</Nav.Link>
-            <Nav.Link href="/asesores">Asesores</Nav.Link>            
+            <Nav.Link href="/asesores">Asesores</Nav.Link> 
+            <Nav.Link href="/scraper">Scraper</Nav.Link>           
           </Nav>
         </Navbar.Collapse>
       

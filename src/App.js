@@ -13,11 +13,14 @@ function App() {
     <div className="App">
       
       <Router>
-
+        <NavBar />
         <Container className='mt-30'>
         <Routes>
           <Route path="/" element={<CommunicationsTable />} />
+          <Route path="/comunicaciones" element={<CommunicationsTable />} />
+          <Route path="/asesores" element={<AdvisorTable />} />
           <Route path="/scraper" element={<Scraper />} />
+
           {/** 
           <Route path="/" element={<ActionsTable />} />
           <Route path="/acciones" element={<ActionsTable />} />

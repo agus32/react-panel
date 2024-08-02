@@ -75,6 +75,34 @@ export const GetCommunications = async (filter,page,pageSize) => {
   return fetchData(`communications${queryParams}`, "GET");
 };
 
+export const GetAdvisors = async () => {
+  return fetchData(`asesor`, "GET");
+};
+
+export const toggleAdvisorActive = async ( phone,value) => {
+  return fetchData(`asesor/${phone}`, "PUT", {active:value});
+};
+
+export const DeleteAdvisor = async (phone) => {
+  return fetchData(`asesor/${phone}`, "DELETE");
+};
+
+export const PutAdvisor = async ( phone,values) => {
+  console.log(values);
+  console.log(phone);
+  return fetchData(`asesor/${phone}`, "PUT", values);
+};
+
+export const AddAdvisor = async (inputs) => {
+  return fetchData("asesor", "POST", {...inputs,active:true});
+};
+
+
+export const ReasignAdvisor = async (phone) => {
+  return fetchData(`asesor/${phone}/reasign`, "PUT");
+};
+
+
 /** 
 
 export const GetLibro = async (isbn) => {

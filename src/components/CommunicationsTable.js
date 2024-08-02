@@ -105,10 +105,10 @@ export const CommunicationsTable = () => {
       key: 'fecha',
     },
     {
-      title: 'Duplicado',
+      title: 'Nuevo',
       dataIndex: 'is_new',
       key: 'is_new',
-      render: (text, record) => (record.is_new ? 'No' : 'Si'),
+      render: (text, record) => (record.is_new ? 'Si' : 'No'),
     },
     {
       title: 'Asesor',
@@ -204,15 +204,15 @@ export const CommunicationsTable = () => {
                         </Form.Item>
                     </Col>
                     <Col span={8}>
-                        <Form.Item label="Duplicado">
+                        <Form.Item label="Nuevo">
                             <Select
                                 onChange={(value) => handleSelectChange('is_new', value)}
                                 value={filters.is_new}
                                 defaultValue={null}
                             >
                                 <Option value={null}>Seleccione</Option>
-                                <Option value={false}>Si</Option>
-                                <Option value={true}>No</Option>                                
+                                <Option value={true}>Si</Option>
+                                <Option value={false}>No</Option>                                
                             </Select>
                         </Form.Item>
                     </Col>

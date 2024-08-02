@@ -1,42 +1,88 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Switch, Button} from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined,RetweetOutlined} from '@ant-design/icons';
 import Swal from "sweetalert2";
+import { ReasignAdvisor,GetAdvisors,toggleAdvisorActive,DeleteAdvisor,PutAdvisor,AddAdvisor} from '../ApiHandler';
+import { AdvisorModal } from './AdvisorModal';
 
-
-
-const exampleAsesores = [
-    { nombre: "Brenda Díaz", telefono: "5213313420733", email: "b@gmail.com", activo: true },
-    { nombre: "Aldo Salcido", telefono: "5213322363535", email: "a@gmail.com", activo: false },
-    { nombre: "Juan Perez", telefono: "5213334567890", email: "j@gmail.com", activo: true },
-    { nombre: "Maria Lopez", telefono: "5213345678901", email: "m@gmail.com", activo: false },
-    { nombre: "Pedro Ramirez", telefono: "5213356789012", email: "p@gmail.com", activo: true },
-  ];
 
 export const AdvisorTable = () => {
-  const [asesores, setAsesores] = useState(exampleAsesores);
+  const [advisors, setAdvisors] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    fetchAsesores();
+    fetchAdvisors();
   }, []);
 
-  const fetchAsesores = async () => {
-    //const response = await axios.get('/asesores');
-    //setAsesores(response.data);
+
+  const fetchAdvisors = async () => {
+    const adv = await GetAdvisors();
+    const data = adv?.data;
+    setAdvisors(data);
   };
 
-  const toggleActivo = async (phone) => {
-    //const asesor = asesores.find(a => a.phone === phone);
-    //await axios.put(`/asesores/${phone}`, { ...asesor, activo: !asesor.activo });
-    console.log('toggleActivo', phone);
-    fetchAsesores();
+  const handleEdit = (record) => {
+    setIsEditing(true);
+    setSelectedContact(record);
+    setVisible(true)
   };
 
-  const deleteAsesor = async (phone) => {
-    //await axios.delete(`/asesores/${phone}`);
-    console.log('deleteAsesor', phone);
-    fetchAsesores();
+  const handleAddNew = () => { 
+    setIsEditing(false);
+    setSelectedContact(null);
+    setVisible(true)
   };
+
+  const handleSave = async(contact) => {
+    
+    if (isEditing) {
+
+      const changedValues = {};
+
+      Object.keys(contact).forEach(key => {
+        if (contact[key] !== selectedContact[key]) {
+          changedValues[key] = contact[key];
+        }
+      });
+
+      if (Object.keys(changedValues).length > 0) {
+        await PutAdvisor(selectedContact.phone, changedValues);
+        fetchAdvisors();
+      }
+      
+    } else {
+      await AddAdvisor(contact);
+      fetchAdvisors();
+    }
+    setVisible(false);
+  };
+
+
+  const toggleActive = async (phone,value) => {
+    toggleAdvisorActive(phone, value);
+    fetchAdvisors();
+  };
+
+
+  const handleReasign = (phone) => {
+    Swal.fire({
+      title: '¿Estás seguro de reasignar el asesor?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, reasignar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        ReasignAdvisor(phone);
+      }
+    }
+    );
+  };
+
 
   const showDeleteConfirm = (phone) => {
     Swal.fire({
@@ -49,7 +95,8 @@ export const AdvisorTable = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteAsesor(phone);
+        DeleteAdvisor(phone);
+        fetchAdvisors();
       }
     });
   };
@@ -57,13 +104,13 @@ export const AdvisorTable = () => {
   const columns = [
     {
       title: 'Nombre',
-      dataIndex: 'nombre',
-      key: 'nombre',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: 'Telefono',
-      dataIndex: 'telefono',
-      key: 'telefono',
+      dataIndex: 'phone',
+      key: 'phone',
     },
     {
       title: 'Email',
@@ -72,9 +119,9 @@ export const AdvisorTable = () => {
     },
     {
       title: 'Activo',
-      key: 'activo',
+      key: 'active',
       render: (text, record) => (
-        <Switch checked={record.activo} onChange={() => toggleActivo(record.telefono)} />
+        <Switch checked={record.active} onChange={() => toggleActive(record.phone,!record.active)} />
       ),
     },
     {
@@ -82,14 +129,27 @@ export const AdvisorTable = () => {
       key: 'acciones',
       render: (text, record) => (
         <span>
-          <Button type="primary" icon={<EditOutlined />} style={{ marginRight: 8 }} />
-          <Button type="primary" danger icon={<DeleteOutlined />} onClick={() => showDeleteConfirm(record.telefono)} />
+          <Button type="primary" icon={<EditOutlined />} style={{ marginRight: 8 }} onClick={() => handleEdit(record)} />
+          <Button type="primary" danger icon={<DeleteOutlined />} style={{ marginRight: 8 }} onClick={() => showDeleteConfirm(record.phone)} />
+          <Button type="primary" icon={<RetweetOutlined />} style={{ backgroundColor: '#008000', borderColor: '#008000'}} onClick={() => handleReasign(record.phone)}/>
         </span>
       ),
     },
   ];
 
-  return <Table style={{ marginTop: 16 }} dataSource={asesores} columns={columns} rowKey="telefono" />;
+  return (
+  <>
+    <Button type="primary" style={{ marginTop: 16 }} onClick={handleAddNew}>Agregar nuevo asesor</Button>
+    <Table style={{ marginTop: 5 }} dataSource={advisors} columns={columns} rowKey="phone" pagination={{ position: ['bottomCenter'] }}/>
+    <AdvisorModal
+        visible={visible}
+        onClose={() => setVisible(false)}
+        onSave={handleSave}
+        initialValues={selectedContact}
+        title={isEditing ? "Editar Asesor" : "Nuevo Asesor"}
+      />
+  </>
+  );
 };
 
 
