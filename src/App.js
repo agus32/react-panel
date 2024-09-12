@@ -20,10 +20,10 @@ function App() {
           <Route path="/comunicaciones" element={<CommunicationsTable />} />
           <Route path="/asesores" element={<AdvisorTable />} />
           <Route path="/scraper" element={<Scraper />} />
-
+          <Route path="/acciones" element={<ActionsTable />} />
           {/** 
           <Route path="/" element={<ActionsTable />} />
-          <Route path="/acciones" element={<ActionsTable />} />
+          
           <Route path="/acciones/nueva" element={<ActionForm />} />
           <Route path="/comunicaciones" element={<CommunicationsTable />} />
           <Route path="/asesores" element={<AdvisorTable />} />

@@ -79,6 +79,18 @@ export const GetAdvisors = async () => {
   return fetchData(`asesor`, "GET");
 };
 
+export const GetFlows = async () => {
+  return fetchData(`flows`, "GET");
+};
+
+export const SetMainFlow = async (uuid) => {
+  return fetchData(`flows/${uuid}/main`, "POST");
+};
+
+export const DeleteFlow = async (uuid) => {
+  return fetchData(`flows/${uuid}`, "DELETE");
+};
+
 export const toggleAdvisorActive = async ( phone,value) => {
   return fetchData(`asesor/${phone}`, "PUT", {active:value});
 };
