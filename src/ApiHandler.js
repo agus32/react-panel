@@ -84,7 +84,7 @@ export const GetFlows = async () => {
 };
 
 export const SetMainFlow = async (uuid) => {
-  return fetchData(`flows/${uuid}/main`, "POST");
+  return fetchData(`mainFlow`, "POST",{uuid});
 };
 
 export const DeleteFlow = async (uuid) => {

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { GetCommunications } from '../ApiHandler';
-import { Table, Button, Input, Select, Form, Row, Col, Space, DatePicker,Pagination} from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { GetCommunications,GetFlows } from '../ApiHandler';
+import { Table, Button, Input, Select, Form, Row, Col, DatePicker,Pagination} from 'antd';
+import { useSearchParams } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -17,7 +18,7 @@ const filterInitialState = {
     is_new: null,
   };
 
-export const CommunicationsTable = () => {
+export const BroadcastTable = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
@@ -26,7 +27,9 @@ export const CommunicationsTable = () => {
     pageSize: 10,
   });
   const [filters, setFilters] = useState(filterInitialState);
-  const navigate = useNavigate();
+  const [flows , setFlows] = useState([]);
+  const [selectedFlow, setSelectedFlow] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const fetchData = async () => {
     setLoading(true);
@@ -34,9 +37,8 @@ export const CommunicationsTable = () => {
     if (Array.isArray(data.data)) {
       setFilteredData(data.data);
       setPagination({
-        current: data.pagination.page,
-        total: data.pagination.total,
-        pageSize: data.pagination.page_size 
+        ...pagination,
+        total: data.pagination.total, 
       });
     } else {
       console.error("Fetched data is not an array:", data.data);
@@ -48,6 +50,28 @@ export const CommunicationsTable = () => {
   useEffect(() => {
     fetchData();
   }, [pagination.current,pagination.pageSize]);
+
+
+  useEffect(() => {
+    const fetchFlows = async () => {
+        const flw = await GetFlows();
+        const data = flw?.data;
+        const flowsKeys = data ? Object.keys(data) : [];
+        setFlows(flowsKeys);
+      };
+    fetchFlows();
+    setSelectedFlow(searchParams.get('flow') ?? "");
+    if(searchParams.get('filters')){
+      const filt = JSON.parse(searchParams.get('filters'));
+      setFilters({
+        ...filt,
+        fechaDesde: filt.fechaDesde ? dayjs(filt.fechaDesde) : null,
+        fechaHasta: filt.fechaHasta ? dayjs(filt.fechaHasta) : null
+      });
+    }
+    
+    }, []);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -83,22 +107,15 @@ export const CommunicationsTable = () => {
     setPagination((prev) => ({ ...prev, current: page, pageSize }));
   };
 
-  const resetFilters = async() => {
-    await setFilters(filterInitialState);
-    await setPagination({
+  const resetFilters = () => {
+    setFilters(filterInitialState);
+    setPagination({
       ...pagination,
       current: 1,
+      total: 0,
     });
     fetchData();
   }
-
-  const GoToBroadcastTable = () => {
-    const queryParams = new URLSearchParams({
-      filters: JSON.stringify(filters),
-    }).toString();
-
-    navigate(`/broadcast?${queryParams}`);
-  };
 
   const columns = [
     {
@@ -151,7 +168,10 @@ export const CommunicationsTable = () => {
                 <Row gutter={24}>
                     <Col span={8}>
                         <Form.Item label="Fecha Desde y Hasta">
-                            <RangePicker style={{ width: '100%' }} onChange={handleDateChange} />
+                            <RangePicker style={{ width: '100%' }} onChange={handleDateChange} 
+                            value={[filters.fechaDesde ? dayjs(filters.fechaDesde) : undefined,
+                                    filters.fechaHasta ? dayjs(filters.fechaHasta) : undefined]}
+                            />
                         </Form.Item>
                     </Col>
                     <Col span={8}>
@@ -234,11 +254,24 @@ export const CommunicationsTable = () => {
                 </Row>
             </Form>
         </div>
-        <Space style={{ marginBottom: 16 }}>
-            <Button type="primary" onClick={GoToBroadcastTable} style={{ backgroundColor: '#36cfc9', borderColor: '#36cfc9' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: '20px', marginTop:20}}>
+            <Select
+                onChange={(value) => setSelectedFlow(value)}
+                value={selectedFlow}
+                defaultValue={""}
+                style={{ flex: 1 }}
+            >
+                <Option value={""}>Seleccione Flow</Option>
+                {flows.map(uuid => (
+                    <Option key={uuid} value={uuid}>
+                    {uuid}
+                    </Option>
+                ))}                                
+            </Select>
+            <Button type="primary" style={{ backgroundColor: '#0ca789', borderColor: '#0ca789', whiteSpace: 'nowrap',flex:0.7 }}>
                 Send Broadcast
             </Button>
-        </Space>
+        </div>
         <Table
             columns={columns}
             dataSource={filteredData}
@@ -251,7 +284,6 @@ export const CommunicationsTable = () => {
             current={pagination.current}
             total={pagination.total}
             onChange={handlePageChange}
-            disabled={loading}
         />
     </div>
   );

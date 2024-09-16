@@ -12,7 +12,7 @@ export const NavBar = () => {
               <NavDropdown.Item href="/acciones/nueva" disabled>Nueva Acción</NavDropdown.Item>
               <NavDropdown.Item href="/acciones">Acciones</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link href="/broadcast" disabled>Broadcast</Nav.Link>
+            <Nav.Link href="/broadcast" >Broadcast</Nav.Link>
             <Nav.Link href="/comunicaciones">Comunicaciones</Nav.Link>
             <Nav.Link href="/asesores">Asesores</Nav.Link> 
             <Nav.Link href="/scraper">Scraper</Nav.Link>           

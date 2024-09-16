@@ -5,6 +5,7 @@ import { ActionsTable } from './components/ActionsTable';
 import {AdvisorTable} from './components/AdvisorTable';
 import { NavBar } from './components/NavBar';
 import { Scraper } from './components/Scraper';
+import {BroadcastTable} from './components/BroadcastTable';
 import { CommunicationsTable } from './components/CommunicationsTable';
 import { Container } from 'react-bootstrap';
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/asesores" element={<AdvisorTable />} />
           <Route path="/scraper" element={<Scraper />} />
           <Route path="/acciones" element={<ActionsTable />} />
+          <Route path="/broadcast" element={<BroadcastTable />} />
           {/** 
           <Route path="/" element={<ActionsTable />} />
           

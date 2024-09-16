@@ -1,15 +1,23 @@
 import React,{useState,useEffect} from 'react';
 import { Table, Button, Space } from 'antd';
 import { GetFlows,SetMainFlow,DeleteFlow } from '../ApiHandler';
+import { useNavigate } from 'react-router-dom';
+
+
 
 
 
 export const ActionsTable = () => {
   const [flows, setFlows] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchFlows();
   }, []);
+
+  const GoToBroadcast = (uuid) => {
+    navigate(`/broadcast?flow=${uuid}`);
+  }
 
 
   const fetchFlows = async () => {
@@ -55,7 +63,7 @@ export const ActionsTable = () => {
       key: 'actions',
       render: (record,index) => (
         <Space size="middle">
-          <Button type="primary" style={{ backgroundColor: '#3b82f6', borderColor: '#3b82f6' }}>Send Broadcast</Button>
+          <Button type="primary" onClick={() => GoToBroadcast(record.uuid)} style={{ backgroundColor: '#3b82f6', borderColor: '#3b82f6' }}>Send Broadcast</Button>
           <Button type="primary" danger disabled={record.is_main} onClick={() => handleDelete(record.uuid)}>Delete</Button>
         </Space>
       ),
