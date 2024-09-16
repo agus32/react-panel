@@ -28,9 +28,9 @@ export const CommunicationsTable = () => {
   const [filters, setFilters] = useState(filterInitialState);
   const navigate = useNavigate();
 
-  const fetchData = async () => {
+  const fetchData = async (current = null,pageSize=null,filt=null) => {
     setLoading(true);
-    const data = await GetCommunications(filters, pagination.current, pagination.pageSize);
+    const data = await GetCommunications(filt ?? filters, current ?? pagination.current, pageSize ?? pagination.pageSize);
     if (Array.isArray(data.data)) {
       setFilteredData(data.data);
       setPagination({
@@ -44,10 +44,10 @@ export const CommunicationsTable = () => {
     }
     setLoading(false);
   };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     fetchData();
-  }, [pagination.current,pagination.pageSize]);
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -73,23 +73,15 @@ export const CommunicationsTable = () => {
   };
 
   const handleSearch = () => { 
-    setPagination({
-      ...pagination,
-      current: 1, 
-    });
-    fetchData();
+    fetchData(1);
   };
   const handlePageChange = (page, pageSize) => {
-    setPagination((prev) => ({ ...prev, current: page, pageSize }));
+    fetchData(page, pageSize);
   };
 
-  const resetFilters = async() => {
-    await setFilters(filterInitialState);
-    await setPagination({
-      ...pagination,
-      current: 1,
-    });
-    fetchData();
+  const resetFilters = () => {
+    setFilters(filterInitialState);
+    fetchData(1,10,filterInitialState);
   }
 
   const GoToBroadcastTable = () => {

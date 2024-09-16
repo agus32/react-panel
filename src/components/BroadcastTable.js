@@ -31,14 +31,15 @@ export const BroadcastTable = () => {
   const [selectedFlow, setSelectedFlow] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const fetchData = async () => {
+  const fetchData = async (current = null,pageSize=null,filt=null) => {
     setLoading(true);
-    const data = await GetCommunications(filters, pagination.current, pagination.pageSize);
+    const data = await GetCommunications(filt ?? filters, current ?? pagination.current, pageSize ?? pagination.pageSize);
     if (Array.isArray(data.data)) {
       setFilteredData(data.data);
       setPagination({
-        ...pagination,
-        total: data.pagination.total, 
+        current: data.pagination.page,
+        total: data.pagination.total,
+        pageSize: data.pagination.page_size 
       });
     } else {
       console.error("Fetched data is not an array:", data.data);
@@ -46,13 +47,11 @@ export const BroadcastTable = () => {
     }
     setLoading(false);
   };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    fetchData();
-  }, [pagination.current,pagination.pageSize]);
+
 
 
   useEffect(() => {
+
     const fetchFlows = async () => {
         const flw = await GetFlows();
         const data = flw?.data;
@@ -63,12 +62,15 @@ export const BroadcastTable = () => {
     setSelectedFlow(searchParams.get('flow') ?? "");
     if(searchParams.get('filters')){
       const filt = JSON.parse(searchParams.get('filters'));
-      setFilters({
+      const parsedFilters = {
         ...filt,
         fechaDesde: filt.fechaDesde ? dayjs(filt.fechaDesde) : null,
         fechaHasta: filt.fechaHasta ? dayjs(filt.fechaHasta) : null
-      });
-    }
+      };
+      setFilters(parsedFilters);
+      fetchData(1,10,filt);
+    }else fetchData();
+    
     
     }, []);
 
@@ -95,26 +97,16 @@ export const BroadcastTable = () => {
       fechaHasta: dates ? dates[1] : null
     });
   };
-
   const handleSearch = () => { 
-    setPagination({
-      ...pagination,
-      current: 1, 
-    });
-    fetchData();
+    fetchData(1);
   };
   const handlePageChange = (page, pageSize) => {
-    setPagination((prev) => ({ ...prev, current: page, pageSize }));
+    fetchData(page, pageSize);
   };
 
   const resetFilters = () => {
     setFilters(filterInitialState);
-    setPagination({
-      ...pagination,
-      current: 1,
-      total: 0,
-    });
-    fetchData();
+    fetchData(1,10,filterInitialState);
   }
 
   const columns = [
