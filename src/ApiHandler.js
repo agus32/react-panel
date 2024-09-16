@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import dayjs from 'dayjs';
 const HOST = "https://reboraautomatizaciones.com/api";
 
 
@@ -71,7 +72,6 @@ export const GetCommunications = async (filter,page,pageSize) => {
   }
   
   const queryParams = toQueryParams(filter);
-  console.log(queryParams);
   return fetchData(`communications${queryParams}`, "GET");
 };
 
@@ -85,6 +85,23 @@ export const GetFlows = async () => {
 
 export const SetMainFlow = async (uuid) => {
   return fetchData(`mainFlow`, "POST",{uuid});
+};
+
+export const SendBroadcast = async (filters,uuid) => {
+  const filterParams = {
+    fecha_from: filters.fechaDesde ? filters.fechaDesde.format('YYYY-MM-DDTHH:mm:ssZ') : undefined,
+    fecha_to: filters.fechaHasta ? filters.fechaHasta.format('YYYY-MM-DDTHH:mm:ssZ') : undefined,
+    asesor_name: filters.asesores.length ? filters.asesores.join(',') : undefined,
+    fuente: filters.fuentes.length ? filters.fuentes.join(',') : undefined,
+    nombre: filters.nombre.length ? filters.nombre : undefined,
+    telefono: filters.telefono.length ? filters.telefono : undefined,
+    is_new: filters.is_new !== null ? filters.is_new : undefined,
+  };
+
+  const filteredParams = Object.fromEntries(Object.entries(filterParams).filter(([_, v]) => v !== undefined));
+
+  return fetchData(`broadcast`, "POST", {uuid,condition:filteredParams});
+
 };
 
 export const DeleteFlow = async (uuid) => {

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { GetCommunications,GetFlows } from '../ApiHandler';
+import { GetCommunications,GetFlows,SendBroadcast } from '../ApiHandler';
 import { Table, Button, Input, Select, Form, Row, Col, DatePicker,Pagination} from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import Swal from "sweetalert2";
+
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -51,7 +53,6 @@ export const BroadcastTable = () => {
 
 
   useEffect(() => {
-
     const fetchFlows = async () => {
         const flw = await GetFlows();
         const data = flw?.data;
@@ -68,12 +69,24 @@ export const BroadcastTable = () => {
         fechaHasta: filt.fechaHasta ? dayjs(filt.fechaHasta) : null
       };
       setFilters(parsedFilters);
-      fetchData(1,10,filt);
+      fetchData(1,10,parsedFilters);
     }else fetchData();
-    
-    
-    }, []);
+  }, []);
 
+  const handleSendBroadcast = async () => {
+    if(!selectedFlow){
+      Swal.fire({
+        title: "Advertencia",
+        text: "Debe seleccionar un flow",
+        icon: "warning",
+      });
+    }else{
+    await SendBroadcast(filters,selectedFlow);
+    setFilters(filterInitialState);
+    setSelectedFlow("");
+    fetchData();
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -260,7 +273,7 @@ export const BroadcastTable = () => {
                     </Option>
                 ))}                                
             </Select>
-            <Button type="primary" style={{ backgroundColor: '#0ca789', borderColor: '#0ca789', whiteSpace: 'nowrap',flex:0.7 }}>
+            <Button type="primary" onClick={handleSendBroadcast} style={{ backgroundColor: '#0ca789', borderColor: '#0ca789', whiteSpace: 'nowrap',flex:0.7 }}>
                 Send Broadcast
             </Button>
         </div>
@@ -276,6 +289,7 @@ export const BroadcastTable = () => {
             current={pagination.current}
             total={pagination.total}
             onChange={handlePageChange}
+            disabled={loading}
         />
     </div>
   );
