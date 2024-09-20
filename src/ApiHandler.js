@@ -89,8 +89,8 @@ export const SetMainFlow = async (uuid) => {
 
 export const SendBroadcast = async (filters,uuid) => {
   const filterParams = {
-    fecha_from: filters.fechaDesde ? filters.fechaDesde.format('YYYY-MM-DDTHH:mm:ssZ') : undefined,
-    fecha_to: filters.fechaHasta ? filters.fechaHasta.format('YYYY-MM-DDTHH:mm:ssZ') : undefined,
+    fecha_from: filters.fechaDesde ? dayjs(filters.fechaDesde).format('YYYY-MM-DDTHH:mm:ssZ') : undefined,
+    fecha_to: filters.fechaHasta ? dayjs(filters.fechaHasta).format('YYYY-MM-DDTHH:mm:ssZ') : undefined,
     asesor_name: filters.asesores.length ? filters.asesores.join(',') : undefined,
     fuente: filters.fuentes.length ? filters.fuentes.join(',') : undefined,
     nombre: filters.nombre.length ? filters.nombre : undefined,
@@ -129,6 +129,25 @@ export const AddAdvisor = async (inputs) => {
 
 export const ReasignAdvisor = async (phone) => {
   return fetchData(`asesor/${phone}/reasign`, "PUT");
+};
+
+export const PostAction = async (name,conditions) => {
+
+  const finalData = {
+    name: name,
+    rules: conditions.map(condition => ({
+      condition: {
+        ...(condition.is_new !== undefined && condition.is_new !== null && { is_new: condition.is_new })
+      },
+      actions: condition.actions.map(action => ({
+        action: action.schemaKey,
+        interval: action.interval ? `${action.interval.$H}h${action.interval.$m}m${action.interval.$s}s` : "0s",
+        params: action.formData
+      }))
+    }))
+  };
+
+  return fetchData("flows", "POST", finalData);
 };
 
 

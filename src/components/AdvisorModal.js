@@ -11,7 +11,7 @@ export const AdvisorModal = ({ visible, onClose, onSave, initialValues, title })
       form.resetFields();
       form.setFieldsValue(initialValues);
     }
-  }, [visible, form]);
+  }, [visible, form,initialValues]);
 
   const handleSave = () => {
     form

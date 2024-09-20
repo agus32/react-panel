@@ -31,7 +31,8 @@ export const BroadcastTable = () => {
   const [filters, setFilters] = useState(filterInitialState);
   const [flows , setFlows] = useState([]);
   const [selectedFlow, setSelectedFlow] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
+  // eslint-disable-next-line
+  const [searchParams, setSearchParams] = useSearchParams() 
 
   const fetchData = async (current = null,pageSize=null,filt=null) => {
     setLoading(true);
