@@ -243,6 +243,7 @@ export const CommunicationsTable = () => {
             current={pagination.current}
             total={pagination.total}
             onChange={handlePageChange}
+            showTotal={(total) => `Total ${total}`}
             disabled={loading}
         />
     </div>

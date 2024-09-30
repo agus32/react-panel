@@ -291,6 +291,7 @@ export const BroadcastTable = () => {
             total={pagination.total}
             onChange={handlePageChange}
             disabled={loading}
+            showTotal={(total) => `Total ${total}`}
         />
     </div>
   );
