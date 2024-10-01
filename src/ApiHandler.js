@@ -151,119 +151,18 @@ export const PostAction = async (name,conditions) => {
 };
 
 
-/** 
-
-export const GetLibro = async (isbn) => {
-  return fetchData(`libro/${isbn}`, "GET");
+export const GetGlossary = async () => {
+  return fetchData(`utm`, "GET");
 };
 
-export const GetMedioPago = async () => {
-  return fetchData("venta/medios_pago", "GET");
+export const PostGlossary = async (item) => {
+  return fetchData("utm", "POST", item);
 };
 
-export const PostPeople = async (inputs) => {
-  return fetchData("persona", "POST", inputs);
+export const PutGlossary = async (id, item) => {
+  return fetchData(`utm/${id}`, "PUT", item);
 };
 
-export const PutLibro = async ({ edit, isbn }) => {
-  return fetchData(`libro/${isbn}`, "PUT", edit);
+export const DeleteGlossary = async (id) => {
+  return fetchData(`utm/${id}`, "DELETE");
 };
-
-export const PutCliente = async ({ edit, id }) => {
-  return fetchData(`cliente/${id}`, "PUT", edit);
-};
-
-export const DeleteCliente = async (id) => {
-  return fetchData(`cliente/${id}`, "DELETE");
-};
-
-export const PutPersonaLibro = async ({ persona, isbn }) => {
-  return fetchData(`libro/${isbn}/personas`, "PUT", persona);
-};
-
-export const GetVentas = async (id) => {
-  return fetchData(`cliente/${id}/ventas`, "GET");
-};
-
-export const GetAllVentas = async () => {
-  return fetchData("venta", "GET");
-};
-
-export const GetConsignaciones = async () => {
-  return fetchData("consignacion", "GET");
-};
-
-export const GetClientesConsignacion = async () => {
-  return fetchData("cliente?stock=1", "GET");
-};
-
-export const GetConsignacionByID = async (id) => {
-  return fetchData(`consignacion/${id}`, "GET");
-};
-
-export const GetVentaById = async (id) => {
-  return fetchData(`venta/${id}`, "GET");
-};
-
-export const GetStockById = async (id) => {
-  return fetchData(`cliente/${id}/stock`, "GET");
-};
-
-export const PostVenta = async (cliente, descuento, medio_pago,tipo_cbte, libros) => {
-  return fetchData("venta", "POST", { cliente, descuento, medio_pago,tipo_cbte, libros });
-};
-
-export const PostLibro = async (inputs) => {
-  return fetchData("libro", "POST", inputs);
-};
-
-export const PostPeopleLibro = async ({ people, isbn }) => {
-  return fetchData(`libro/${isbn}/personas`, "POST", people);
-};
-
-export const PostPerson = async (inputs) => {
-  return fetchData("persona", "POST", inputs);
-};
-
-export const PostCliente = async (inputs) => {
-  return fetchData("cliente", "POST", inputs);
-};
-
-export const PostConsignacion = async (cliente,libros) => {
-  return fetchData("consignacion", "POST", {cliente,libros});
-};
-
-export const PostVentaConsignacion = async (cliente,fecha_venta, descuento, medio_pago,tipo_cbte, libros) => {
-  return fetchData("ventaConsignacion", "POST", { cliente,fecha_venta, descuento, medio_pago,tipo_cbte, libros });
-};
-
-export const PostDevolucionConsignacion = async (cliente,libros) => {
-  return fetchData("devolucion", "POST", {cliente,libros});
-};
-
-export const DeletePersonFromBook = async ({ isbn, id, type }) => {
-  const content = {
-    id_persona: id,
-    tipo: type,
-  };
-
-  return fetchData(`libro/${isbn}/personas`, "DELETE", content);
-};
-
-export const GetClientes = async () => {
-  return fetchData("cliente", "GET");
-};
-
-export const DeletePerson = async (id) => {
-  return fetchData(`persona/${id}`, "DELETE");
-};
-
-export const PostLogin = async (user) => {
-  return fetchData("user/login", "POST", user);
-};
-
-export const ActaulizarListaPrecios = async (id) => {
-  return fetchData(`cliente/${id}/stock`, "PUT");
-};
-
-*/

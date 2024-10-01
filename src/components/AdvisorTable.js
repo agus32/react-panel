@@ -71,8 +71,8 @@ export const AdvisorTable = () => {
       title: '¿Estás seguro de reasignar el asesor?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
       confirmButtonText: 'Sí, reasignar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
@@ -89,8 +89,8 @@ export const AdvisorTable = () => {
       title: '¿Estás seguro de eliminar el asesor?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
