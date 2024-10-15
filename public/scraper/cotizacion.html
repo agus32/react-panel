@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Leads Extractor</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="cotizacion.js"></script>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <h1>Scraper Form</h1>
+    
+    <div class="form-container">
+        <label for="nombreClienteInput">Nombre del cliente:</label>
+        <div id="errorNombreCliente" style="color: red;"></div>
+        <input type="text" id="nombreClienteInput">
+
+        <br>
+
+        <label for="nombreAsesorInput">Nombre del asesor:</label>
+        <div id="errorNombreAsesor" style="color: red;"></div>
+        <input type="text" id="nombreAsesorInput">
+
+        <br>
+
+        <label for="emailAsesorInput">Email del asesor:</label>
+        <div id="errorEmailAsesor" style="color: red;"></div>
+        <input type="email" id="emailAsesorInput">
+
+        <br>
+
+        <label for="telefonoAsesorInput">Teléfono del asesor:</label>
+        <div id="errorTelefonoAsesor" style="color: red;"></div>
+        <input type="tel" id="telefonoAsesorInput">
+
+        <br>
+
+        <div id="urlsInputContainer" style="display: none;">
+            <label for="urlsInput">Lista de URLs (una por línea):</label>
+            <div id="errorUrls" style="color: red;"></div>
+            <textarea id="urlsInput" rows="6" cols="50"></textarea>
+        </div>
+        <br>
+
+        <button onclick="execute_script()">Generar Cotización</button>
+
+        <div id="status-container" style="display: none;">
+            <p id="status-message"></p>
+            <img id="loading-img" src="loading-spinner.gif" alt="Loading..." style="display: none;">
+        </div>
+    </div>
+</body>
+</html>
