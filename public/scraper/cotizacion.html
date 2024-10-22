@@ -10,34 +10,30 @@
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <h1>Scraper Form</h1>
+    <h1>Generador de cotizaciones</h1>
     
     <div class="form-container">
         <label for="nombreClienteInput">Nombre del cliente:</label>
         <div id="errorNombreCliente" style="color: red;"></div>
         <input type="text" id="nombreClienteInput">
-
         <br>
 
         <label for="nombreAsesorInput">Nombre del asesor:</label>
         <div id="errorNombreAsesor" style="color: red;"></div>
         <input type="text" id="nombreAsesorInput">
-
         <br>
 
         <label for="emailAsesorInput">Email del asesor:</label>
         <div id="errorEmailAsesor" style="color: red;"></div>
         <input type="email" id="emailAsesorInput">
-
         <br>
 
         <label for="telefonoAsesorInput">Teléfono del asesor:</label>
         <div id="errorTelefonoAsesor" style="color: red;"></div>
         <input type="tel" id="telefonoAsesorInput">
-
         <br>
 
-        <div id="urlsInputContainer" style="display: none;">
+        <div id="urlsInputContainer">
             <label for="urlsInput">Lista de URLs (una por línea):</label>
             <div id="errorUrls" style="color: red;"></div>
             <textarea id="urlsInput" rows="6" cols="50"></textarea>

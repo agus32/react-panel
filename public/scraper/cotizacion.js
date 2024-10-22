@@ -1,45 +1,30 @@
 const HOST = "http://localhost:8081";
+//const HOST = "https://reboraautomatizaciones.com/app";
 
 window.onload = function() {
     document.getElementById("propiedadesInput").value = "";
     document.getElementById("urlsInput").value = "";
 };
 
-function toggleInputField() {
-    const tipoEntrada = document.getElementById("tipoEntrada").value;
-    if (tipoEntrada === "json") {
-        document.getElementById("jsonInputContainer").style.display = "block";
-        document.getElementById("urlsInputContainer").style.display = "none";
-    } else {
-        document.getElementById("jsonInputContainer").style.display = "none";
-        document.getElementById("urlsInputContainer").style.display = "block";
-    }
-}
-
 async function execute_script() {
-    var error = false;
+    let error = false;
 
-    const portal = document.getElementById("portalSelector").value;
     const nombreAsesor = document.getElementById("nombreAsesorInput").value;
     const nombreCliente = document.getElementById("nombreClienteInput").value;
     const emailAsesor = document.getElementById("emailAsesorInput").value;
     const telefonoAsesor = document.getElementById("telefonoAsesorInput").value;
-    const tipoEntrada = document.getElementById("tipoEntrada").value;
 
-    const propiedadesInput = document.getElementById("propiedadesInput").value;
     const urlsInput = document.getElementById("urlsInput").value;
 
     const errorNombreAsesor = document.getElementById("errorNombreAsesor");
     const errorNombreCliente = document.getElementById("errorNombreCliente");
     const errorEmailAsesor = document.getElementById("errorEmailAsesor");
     const errorTelefonoAsesor = document.getElementById("errorTelefonoAsesor");
-    const errorPropiedades = document.getElementById("errorPropiedades");
     const errorUrls = document.getElementById("errorUrls");
 
     errorNombreAsesor.innerHTML = "";
     errorEmailAsesor.innerHTML = "";
     errorTelefonoAsesor.innerHTML = "";
-    errorPropiedades.innerHTML = "";
     errorUrls.innerHTML = "";
 
     if (nombreAsesor.trim() === "") {
@@ -62,20 +47,6 @@ async function execute_script() {
         error = true;
     }
 
-    if (tipoEntrada === "json" && propiedadesInput.trim() !== "") {
-        try {
-            JSON.parse(propiedadesInput);
-        } catch (SyntaxError) {
-            errorPropiedades.innerHTML = "Las propiedades ingresadas no son un JSON válido.";
-            error = true;
-        }
-    }
-
-    if (tipoEntrada === "urls" && urlsInput.trim() === "") {
-        errorUrls.innerHTML = "Por favor, ingresa una lista de URLs.";
-        error = true;
-    }
-
     if (error) {
         return;
     }
@@ -83,22 +54,16 @@ async function execute_script() {
     document.getElementById("status-container").style.display = "block";
     document.getElementById("loading-img").style.display = "block";
 
-    let apiEndpoint = tipoEntrada === "json" ? "/cotizacion" : "/cotizacion_urls";
-    let bodyData = {
-        portal: portal,
+    const apiEndpoint = "/cotizacion";
+    const bodyData = {
         asesor: {
             name: nombreAsesor,
             email: emailAsesor,
             phone: telefonoAsesor
         },
-        cliente: nombreCliente
+        cliente: nombreCliente,
+        urls: urlsInput.split("\n").map(url => url.trim()).filter(url => url !== "")
     };
-
-    if (tipoEntrada === "json") {
-        bodyData.posts = JSON.parse(propiedadesInput);
-    } else {
-        bodyData.urls = urlsInput.split("\n").map(url => url.trim()).filter(url => url !== "");
-    }
 
     fetch(`${HOST}${apiEndpoint}`, {
         method: 'POST',
@@ -109,12 +74,18 @@ async function execute_script() {
     })
     .then(response => response.json())
     .then(data => {
-        const taskId = data["task_id"];
-        checkTaskStatus(taskId);
+        console.log(data)
+        if ("error" in data){
+            alert(data["error"]);
+            document.getElementById("loading-img").style.display = "none";
+        }else{
+            const taskId = data["task_id"];
+            checkTaskStatus(taskId);
+        }
     })
     .catch(error => {
         console.error(error);
-        alert("Ocurrió un error iniciando la cotización");
+        alert(error);
         document.getElementById("loading-img").style.display = "none";
     });
 }
