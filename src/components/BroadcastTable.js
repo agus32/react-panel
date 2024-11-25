@@ -82,7 +82,7 @@ export const BroadcastTable = () => {
     const fetchFlows = async () => {
         const flw = await GetFlows();
         const data = flw?.data;
-        const flowsKeys = data ? Object.keys(data) : [];
+        const flowsKeys = data ? Object.entries(data).map(([uuid, { name }]) => ({ uuid, name })) : [];
         setFlows(flowsKeys);
       };
     fetchFlows();
@@ -402,9 +402,9 @@ export const BroadcastTable = () => {
                 style={{ flex: 1 }}
             >
                 <Option value={""}>Seleccione Flow</Option>
-                {flows.map(uuid => (
-                    <Option key={uuid} value={uuid}>
-                    {uuid}
+                {flows.map(flow => (
+                    <Option key={flow.uuid} value={flow.uuid}>
+                    {flow.name}
                     </Option>
                 ))}                                
             </Select>
