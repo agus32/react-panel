@@ -65,6 +65,13 @@ export const GetCommunications = async (filter,page,pageSize) => {
     filter.fuentes.length && params.append('fuente', filter.fuentes.join(','));
     filter.nombre.length && params.append('nombre', filter.nombre);
     filter.telefono.length && params.append('telefono', filter.telefono);
+    filter.utm_source?.length && params.append('utm_source', filter.utm_source);
+    filter.utm_medium?.length && params.append('utm_medium', filter.utm_medium);
+    filter.utm_campaign?.length && params.append('utm_campaign', filter.utm_campaign);
+    filter.utm_ad?.length && params.append('utm_ad', filter.utm_ad);
+    filter.utm_channel?.length && params.append('utm_channel', filter.utm_channel);
+
+
     page && params.append('page', page);
     pageSize && params.append('page_size', pageSize);
     filter.is_new !== null && params.append('is_new', filter.is_new);
@@ -96,10 +103,14 @@ export const SendBroadcast = async (filters,uuid) => {
     nombre: filters.nombre.length ? filters.nombre : undefined,
     telefono: filters.telefono.length ? filters.telefono : undefined,
     is_new: filters.is_new !== null ? filters.is_new : undefined,
+    utm_source: filters.utm_source?.length ? filters.utm_source.join(',') : undefined,
+    utm_medium: filters.utm_medium?.length ? filters.utm_medium.join(',') : undefined,
+    utm_campaign: filters.utm_campaign?.length ? filters.utm_campaign.join(',') : undefined,
+    utm_ad: filters.utm_ad?.length ? filters.utm_ad.join(',') : undefined,
+    utm_channel: filters.utm_channel?.length ? filters.utm_channel.join(',') : undefined,
   };
 
   const filteredParams = Object.fromEntries(Object.entries(filterParams).filter(([_, v]) => v !== undefined));
-
   return fetchData(`broadcast`, "POST", {uuid,condition:filteredParams});
 
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GetCommunications,GetFlows,SendBroadcast } from '../ApiHandler';
+import { GetCommunications,GetFlows,SendBroadcast,GetGlossary } from '../ApiHandler';
 import { Table, Button, Input, Select, Form, Row, Col, DatePicker,Pagination} from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -18,6 +18,11 @@ const filterInitialState = {
     fechaDesde: null,
     fechaHasta: null,
     is_new: null,
+    utm_source: [],
+    utm_medium: [],
+    utm_channel: [],
+    utm_campaign: [],
+    utm_ad: [],
   };
 
 export const BroadcastTable = () => {
@@ -29,6 +34,13 @@ export const BroadcastTable = () => {
     pageSize: 10,
   });
   const [filters, setFilters] = useState(filterInitialState);
+  const [utmOptions, setUtmOptions] = useState({
+    utm_source: [],
+    utm_medium: [],
+    utm_campaign: [],
+    utm_ad: [],
+    utm_channel: [],
+  });
   const [flows , setFlows] = useState([]);
   const [selectedFlow, setSelectedFlow] = useState("");
   // eslint-disable-next-line
@@ -51,9 +63,22 @@ export const BroadcastTable = () => {
     setLoading(false);
   };
 
-
+  const fetchGlossary = async () => {
+    const glossary = await GetGlossary();
+    if (glossary && glossary.data) {
+      const options = {
+        utm_source: [...new Set(glossary.data.map((item) => item.utm_source).filter(Boolean))],
+        utm_medium: [...new Set(glossary.data.map((item) => item.utm_medium).filter(Boolean))],
+        utm_campaign: [...new Set(glossary.data.map((item) => item.utm_campaign).filter(Boolean))],
+        utm_ad: [...new Set(glossary.data.map((item) => item.utm_ad).filter(Boolean))],
+        utm_channel: [...new Set(glossary.data.map((item) => item.utm_channel).filter(Boolean))],
+      };
+      setUtmOptions(options);
+    }
+  };
 
   useEffect(() => {
+    fetchGlossary();
     const fetchFlows = async () => {
         const flw = await GetFlows();
         const data = flw?.data;
@@ -165,6 +190,31 @@ export const BroadcastTable = () => {
       dataIndex: 'email',
       key: 'email',
     },
+    {
+      title: 'UTM Source',
+      dataIndex: ['utm', 'utm_source'],
+      key: 'utm_source',
+    },
+    {
+      title: 'UTM Medium',
+      dataIndex: ['utm', 'utm_medium'],
+      key: 'utm_medium',
+    },
+    {
+      title: 'UTM Channel',
+      dataIndex: ['utm', 'utm_channel'],
+      key: 'utm_channel',
+    },
+    {
+      title: 'UTM Campaign',
+      dataIndex: ['utm', 'utm_campaign'],
+      key: 'utm_campaign',
+    },
+    {
+      title: 'UTM Ad',
+      dataIndex: ['utm', 'utm_ad'],
+      key: 'utm_ad',
+    },
   ];
 
   return (
@@ -249,6 +299,90 @@ export const BroadcastTable = () => {
                             </Select>
                         </Form.Item>
                     </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col span={8}>
+                    <Form.Item label="UTM Source">
+                      <Select
+                        mode="multiple"
+                        placeholder="Seleccione UTM Source"
+                        onChange={(value) => handleSelectChange('utm_source', value)}
+                        value={filters.utm_source}
+                      >
+                        {utmOptions.utm_source.map((option) => (
+                          <Option key={option} value={option}>
+                            {option}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="UTM Medium">
+                      <Select
+                        mode="multiple"
+                        placeholder="Seleccione UTM Medium"
+                        onChange={(value) => handleSelectChange('utm_medium', value)}
+                        value={filters.utm_medium}
+                      >
+                        {utmOptions.utm_medium.map((option) => (
+                          <Option key={option} value={option}>
+                            {option}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="UTM Channel">
+                      <Select
+                        mode="multiple"
+                        placeholder="Seleccione UTM Channel"
+                        onChange={(value) => handleSelectChange('utm_channel', value)}
+                        value={filters.utm_channel}
+                      >                        
+                        {utmOptions.utm_channel.map((option) => (
+                          <Option key={option} value={option}>
+                            {option}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col span={8}>
+                    <Form.Item label="UTM Campaign">
+                      <Select
+                        mode="multiple"
+                        placeholder="Seleccione UTM Campaign"
+                        onChange={(value) => handleSelectChange('utm_campaign', value)}
+                        value={filters.utm_campaign}
+                      >
+                        {utmOptions.utm_campaign.map((option) => (
+                          <Option key={option} value={option}>
+                            {option}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="UTM Ad">
+                      <Select
+                        mode="multiple"
+                        placeholder="Seleccione UTM Ad"
+                        onChange={(value) => handleSelectChange('utm_ad', value)}
+                        value={filters.utm_ad}
+                      >
+                        {utmOptions.utm_ad.map((option) => (
+                          <Option key={option} value={option}>
+                            {option}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
                 </Row>
                 <Row gutter={16}>
                     <Col span={8}>
