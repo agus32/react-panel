@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GetCommunications,GetGlossary } from '../ApiHandler';
+import { GetCommunications,GetGlossary,GetAdvisors } from '../ApiHandler';
 import { Table, Button, Input, Select, Form, Row, Col, Space, DatePicker,Pagination} from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -39,6 +39,7 @@ export const CommunicationsTable = () => {
     pageSize: 10,
   });
   const [filters, setFilters] = useState(filterInitialState);
+  const [advisors,setAdvisors]= useState([]);
   const navigate = useNavigate();
 
   const fetchData = async (current = null,pageSize=null,filt=null) => {
@@ -58,6 +59,12 @@ export const CommunicationsTable = () => {
     setLoading(false);
   };
 
+  const fetchAdvisors = async () => {
+    const adv = await GetAdvisors();
+    const data = adv?.data;
+    setAdvisors(data);
+  };
+
   const fetchGlossary = async () => {
     const glossary = await GetGlossary();
     if (glossary && glossary.data) {
@@ -73,6 +80,7 @@ export const CommunicationsTable = () => {
   };
 
   useEffect(() => {
+    fetchAdvisors();
     fetchData();
     fetchGlossary();
   }, []);
@@ -224,12 +232,11 @@ export const CommunicationsTable = () => {
                                 onChange={(value) => handleSelectChange('asesores', value)}
                                 value={filters.asesores}
                             >
-                                <Option value="Onder Sotomayor">Onder Sotomayor</Option>
-                                <Option value="Eduardo Jordan">Eduardo Jordan</Option>
-                                <Option value="Brenda Díaz">Brenda Díaz</Option>
-                                <Option value="Maggie Escobedo">Maggie Escobedo</Option>
-                                <Option value="Lucy Vera">Lucy Vera</Option>
-                                <Option value="Aldo Salcido">Aldo Salcido</Option>
+                                {advisors.map((advisor) => (
+                                  <Option key={advisor.phone} value={advisor.name}>
+                                    {advisor.name}
+                                  </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>

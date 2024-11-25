@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GetCommunications,GetFlows,SendBroadcast,GetGlossary } from '../ApiHandler';
+import { GetCommunications,GetFlows,SendBroadcast,GetGlossary,GetAdvisors } from '../ApiHandler';
 import { Table, Button, Input, Select, Form, Row, Col, DatePicker,Pagination} from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -42,6 +42,7 @@ export const BroadcastTable = () => {
     utm_channel: [],
   });
   const [flows , setFlows] = useState([]);
+  const [advisors,setAdvisors]= useState([]);
   const [selectedFlow, setSelectedFlow] = useState("");
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams() 
@@ -77,7 +78,14 @@ export const BroadcastTable = () => {
     }
   };
 
+  const fetchAdvisors = async () => {
+    const adv = await GetAdvisors();
+    const data = adv?.data;
+    setAdvisors(data);
+  };
+
   useEffect(() => {
+    fetchAdvisors();
     fetchGlossary();
     const fetchFlows = async () => {
         const flw = await GetFlows();
@@ -255,12 +263,11 @@ export const BroadcastTable = () => {
                                 onChange={(value) => handleSelectChange('asesores', value)}
                                 value={filters.asesores}
                             >
-                                <Option value="Onder Sotomayor">Onder Sotomayor</Option>
-                                <Option value="Eduardo Jordan">Eduardo Jordan</Option>
-                                <Option value="Brenda Díaz">Brenda Díaz</Option>
-                                <Option value="Maggie Escobedo">Maggie Escobedo</Option>
-                                <Option value="Lucy Vera">Lucy Vera</Option>
-                                <Option value="Aldo Salcido">Aldo Salcido</Option>
+                                {advisors.map((advisor) => (
+                                  <Option key={advisor.phone} value={advisor.name}>
+                                    {advisor.name}
+                                  </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
