@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { GetCommunications,GetGlossary,GetAdvisors } from '../ApiHandler';
 import { Table, Button, Input, Select, Form, Row, Col, Space, DatePicker,Pagination} from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { exportTableToCSV } from './CsvHandler';
+import Swal from "sweetalert2";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -84,6 +86,16 @@ export const CommunicationsTable = () => {
     fetchData();
     fetchGlossary();
   }, []);
+
+  const handleExportCSV = () => {
+    if (filteredData.length === 0) {
+      Swal.fire({
+        title: "Advertencia",
+        text: "No hay datos para exportar",
+        icon: "warning",
+      });
+    }else exportTableToCSV(columns, filteredData);
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -371,10 +383,14 @@ export const CommunicationsTable = () => {
             </Form>
         </div>
         <Space style={{ marginBottom: 16 }}>
-            <Button type="primary" onClick={GoToBroadcastTable} style={{ backgroundColor: '#36cfc9', borderColor: '#36cfc9' }}>
+            <Button type="primary" onClick={GoToBroadcastTable} style={{ backgroundColor: '#f2b600', borderColor: '#f2b600' }}>
                 Send Broadcast
             </Button>
+            <Button type="primary" onClick={handleExportCSV} style={{ backgroundColor: '#219e00', borderColor: '#219e00' }}>
+                Export CSV
+            </Button>
         </Space>
+        
         <Table
             columns={columns}
             dataSource={filteredData}
