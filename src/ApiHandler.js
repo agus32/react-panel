@@ -90,6 +90,28 @@ export const GetFlows = async () => {
   return fetchData(`flows`, "GET");
 };
 
+export const GetLogs = async (filter,page,pageSize) => {
+ 
+  function toQueryParams(filter) {
+    const params = new URLSearchParams();
+
+    filter.time_gt && params.append('time_gt', filter.time_gt);
+    filter.time_lt && params.append('time_lt', filter.time_lt);
+    filter.module && params.append('module', filter.module);
+    filter.level && params.append('level', filter.level);
+    
+    page && params.append('page', page);
+    pageSize && params.append('page_size', pageSize);
+
+    return `?${params.toString()}`;
+  }
+  
+  const queryParams = toQueryParams(filter);
+ 
+ console.log(filter,page,pageSize);
+  return fetchData(`logs${queryParams}`, "GET");
+};
+
 export const SetMainFlow = async (uuid) => {
   return fetchData(`mainFlow`, "POST",{uuid});
 };

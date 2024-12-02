@@ -8,6 +8,7 @@ import { Scraper } from './components/Scraper';
 import {BroadcastTable} from './components/BroadcastTable';
 import { CommunicationsTable } from './components/CommunicationsTable';
 import {GlossaryTable} from './components/GlossaryTable';
+import { LogsTable } from './components/LogsTable';
 import { Container } from 'react-bootstrap';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/acciones/nueva" element={<ActionForm />} />
           <Route path="/broadcast" element={<BroadcastTable />} />
           <Route path="/glosarioutm" element={<GlossaryTable />} />
+          <Route path='/logs' element={<LogsTable/>} />
         </Routes>
         </Container>
       </Router>

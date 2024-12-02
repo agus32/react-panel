@@ -16,7 +16,8 @@ export const NavBar = () => {
             <Nav.Link href="/comunicaciones">Comunicaciones</Nav.Link>
             <Nav.Link href="/asesores">Asesores</Nav.Link> 
             <Nav.Link href="/scraper">Scraper</Nav.Link>     
-            <Nav.Link href="/glosarioutm">Glosario UTM</Nav.Link>      
+            <Nav.Link href="/glosarioutm">Glosario UTM</Nav.Link> 
+            <Nav.Link href="/logs">Logs</Nav.Link>     
           </Nav>
         </Navbar.Collapse>
       
