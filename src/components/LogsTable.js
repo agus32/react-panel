@@ -73,6 +73,7 @@ export const LogsTable = () => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFiltersChange = (key, value) => {

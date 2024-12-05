@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Form, Input, Button, Select, TimePicker } from 'antd';
 import { default as JSONSchemaForm } from '@rjsf/antd';
 import validator from '@rjsf/validator-ajv8';
 import { schemas } from '../config'; 
-import { PostAction } from '../ApiHandler';
+import { PostAction,GetFlows } from '../ApiHandler';
 
 const { Option } = Select;
 
@@ -14,6 +14,18 @@ export const ActionForm = () => {
   const [nextConditionId, setNextConditionId] = useState(2);
   const [nextActionId, setNextActionId] = useState(2);
   const [name, setName] = useState('');
+  const [flows , setFlows] = useState([]);
+  const [selectedFlow, setSelectedFlow] = useState("");
+
+  useEffect(() => {
+    const fetchFlows = async () => {
+      const flw = await GetFlows();
+      const data = flw?.data;
+      const flowsKeys = data ? Object.entries(data).map(([uuid, { name }]) => ({ uuid, name })) : [];
+      setFlows(flowsKeys);
+    };
+  fetchFlows();
+  }, []);
 
   const addCondition = () => {
     setConditions([...conditions, { id: nextConditionId, is_new: undefined, actions: [{ id: nextActionId, schemaKey: Object.keys(schemas)[0], formData: {}, interval: '0s' }] }]);
@@ -107,17 +119,33 @@ export const ActionForm = () => {
   };
 
   const handleSubmit = async () => {
-    await PostAction(name,conditions);
+    await PostAction(name,conditions,selectedFlow);
     setConditions(initialState);
     setNextActionId(2);
     setNextConditionId(2);
     setName('');  
+    setSelectedFlow("");
   };
 
   return (
     <Form layout="vertical" style={{ marginTop: '20px' }}>
       <Form.Item label="Nombre">
         <Input placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
+      </Form.Item>
+      <Form.Item label="On Response">
+        <Select
+            onChange={(value) => setSelectedFlow(value)}
+            value={selectedFlow}
+            defaultValue={""}
+            style={{ flex: 1 }}
+        >
+            <Option value={""}>Seleccione Flow</Option>
+            {flows.map(flow => (
+                <Option key={flow.uuid} value={flow.uuid}>
+                {flow.name}
+                </Option>
+            ))}                                
+        </Select>
       </Form.Item>
 
       {conditions.map(condition => (
@@ -129,7 +157,7 @@ export const ActionForm = () => {
           <Form.Item >
             <Input.Group compact>
               <Select
-                  style={{ width: '20%' }}
+                  style={{ flex: 1 }}
                   defaultValue={""}
 
                 >
@@ -137,11 +165,11 @@ export const ActionForm = () => {
                 <Option value={"is_new"}>is_new</Option>
               </Select>
               <Select
-                defaultValue={undefined}
-                style={{ width: '20%' }}
+                defaultValue={""}
+                style={{ flex: 1 }}
                 onChange={(value) => handleConditionChange(condition.id, value)}
               >
-                <Option value={undefined}>Seleccionar</Option>
+                <Option value={""}>Seleccionar</Option>
                 <Option value={true}>True</Option>
                 <Option value={false}>False</Option>
               </Select>
@@ -176,16 +204,15 @@ export const ActionForm = () => {
                     },
                   }}
                 />
-              </Form.Item>
+              </Form.Item>              
             </div>
           ))}
-
           <Button type="primary" onClick={() => addAction(condition.id)}>+ New Action</Button>
         </div>
       ))}
 
       <Button type="primary" onClick={addCondition}>+ New Rule</Button>
-      <Button type="primary" onClick={handleSubmit} style={{ marginTop: '20px', backgroundColor: '#008000', borderColor: '#008000', marginLeft: "5px" }}>Save</Button>
+      <Button type="primary" onClick={handleSubmit} style={{ marginTop: '5px', backgroundColor: '#008000', borderColor: '#008000', marginLeft: "5px" }}>Save</Button>
     </Form>
   );
 };

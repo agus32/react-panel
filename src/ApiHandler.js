@@ -164,10 +164,11 @@ export const ReasignAdvisor = async (phone) => {
   return fetchData(`asesor/${phone}/reasign`, "PUT");
 };
 
-export const PostAction = async (name,conditions) => {
+export const PostAction = async (name,conditions,flow) => {
 
   const finalData = {
     name: name,
+    on_response: flow.length === 0 ? undefined : flow,
     rules: conditions.map(condition => ({
       condition: {
         ...(condition.is_new !== undefined && condition.is_new !== null && { is_new: condition.is_new })
