@@ -169,11 +169,12 @@ export const PostAction = async (name,conditions,flow) => {
   const finalData = {
     name: name,
     on_response: flow.length === 0 ? undefined : flow,
-    rules: conditions.map(condition => ({
-      condition: {
-        ...(condition.is_new !== undefined && condition.is_new !== null && { is_new: condition.is_new })
-      },
-      actions: condition.actions.map(action => ({
+    rules: conditions.map(rule => ({
+      condition: rule.conditions.reduce((acc, condition) => {
+        acc[condition.field] = condition.value; // Asignar cada par clave-valor
+        return acc;
+      }, {}),
+      actions: rule.actions.map(action => ({
         action: action.schemaKey,
         interval: action.interval ? `${action.interval.$H}h${action.interval.$m}m${action.interval.$s}s` : "0s",
         params: action.formData
