@@ -185,6 +185,11 @@ export const PostAction = async (name,conditions,flow) => {
   return fetchData("flows", "POST", finalData);
 };
 
+export const PostCSV = async (file) => {
+  const formData = new FormData();
+  formData.append("csv_file", file);
+  return fetchData(`communication-csv`, "POST", {formData});
+};
 
 export const GetGlossary = async () => {
   return fetchData(`utm`, "GET");

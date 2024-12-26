@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GetCommunications,GetGlossary,GetAdvisors } from '../ApiHandler';
+import { GetCommunications,GetGlossary,GetAdvisors,PostCSV } from '../ApiHandler';
 import { Table, Button, Input, Select, Form, Row, Col, Space, DatePicker,Pagination} from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { exportTableToCSV } from './CsvHandler';
@@ -96,6 +96,31 @@ export const CommunicationsTable = () => {
       });
     }else exportTableToCSV(columns, filteredData);
   }
+
+  const handleImportCSV = async () => {
+    const { value: file } = await Swal.fire({
+      title: "Importar CSV",
+      text: "Seleccione un archivo CSV",
+      input: "file",
+      inputAttributes: {
+        accept: ".csv",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Subir",
+      cancelButtonText: "Cancelar",
+    });
+  
+    if (file) {
+      await PostCSV(file);
+    } else {
+      Swal.fire({
+        icon: "info",
+        title: "Cancelado",
+        text: "No se seleccionó ningún archivo.",
+      });
+    }
+  };
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -382,14 +407,19 @@ export const CommunicationsTable = () => {
                 </Row>
             </Form>
         </div>
-        <Space style={{ marginBottom: 16 }}>
-            <Button type="primary" onClick={GoToBroadcastTable} style={{ backgroundColor: '#f2b600', borderColor: '#f2b600' }}>
-                Send Broadcast
-            </Button>
-            <Button type="primary" onClick={handleExportCSV} style={{ backgroundColor: '#219e00', borderColor: '#219e00' }}>
-                Export CSV
-            </Button>
-        </Space>
+        <Space style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div>
+              <Button type="primary" onClick={GoToBroadcastTable} style={{ backgroundColor: '#f2b600', borderColor: '#f2b600' }}>
+                  Send Broadcast
+              </Button>
+              <Button type="primary" onClick={handleExportCSV} style={{ backgroundColor: '#219e00', borderColor: '#219e00', marginLeft: 8 }}>
+                  Export CSV
+              </Button>
+          </div>
+          <Button type="primary" onClick={handleImportCSV} style={{ backgroundColor: '#007bff', borderColor: '#007bff' }}>
+              Import CSV
+          </Button>
+      </Space>
         
         <Table
             columns={columns}

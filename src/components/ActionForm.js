@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Select, TimePicker } from 'antd';
 import { default as JSONSchemaForm } from '@rjsf/antd';
 import validator from '@rjsf/validator-ajv8';
-import { schemas,fieldsList } from '../config';
+import { schemas } from '../config';
+import { fieldsList, RenderFieldByType } from './ConditionSelect';
 import { PostAction, GetFlows } from '../ApiHandler';
 
 const { Option } = Select;
@@ -234,23 +235,11 @@ export const ActionForm = () => {
                     </Option>
                   ))}
                 </Select>
-                {fieldsList.find((field) => field.name === condition.field)?.type === "select" ? (
-                  <Select
-                    style={{ width: '40%' }}                    
-                    value={condition.value}
-                    onChange={(value) => handleConditionValueChange(rule.id, condition.id, value)}
-                  >
-                    <Option value="">Seleccionar</Option>
-                    <Option value={true}>True</Option>
-                    <Option value={false}>False</Option>
-                  </Select>
-                ) : (
-                  <Input
-                    style={{ width: '40%' }}
-                    value={condition.value || ""}
-                    onChange={(e) => handleConditionValueChange(rule.id, condition.id, e.target.value)}
-                  />
-                )}
+                <RenderFieldByType
+                  type={fieldsList.find((field) => field.name === condition.field)?.type}
+                  value={condition.value}
+                  onChange={(value) => handleConditionValueChange(rule.id, condition.id, value)}
+                />
                 <Button
                   type="primary"
                   danger

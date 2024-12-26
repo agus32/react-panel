@@ -1,9 +1,3 @@
-export const fieldsList = [
-  { name: "is_new", type: "select" },
-  { name: "nombre", type: "input" },
-  { name: "fuente", type: "input" },
-  { name: "telefono", type: "input" },
-];
 export const schemas = {
       "infobip.save": {
         name: "infobip.save",
