@@ -164,12 +164,12 @@ export const ReasignAdvisor = async (phone) => {
   return fetchData(`asesor/${phone}/reasign`, "PUT");
 };
 
-export const PostAction = async (name,conditions,flow) => {
+export const PostAction = async (name,conditions) => {
 
   const finalData = {
     name: name,
-    on_response: flow.length === 0 ? undefined : flow,
     rules: conditions.map(rule => ({
+      on_response: rule.on_response.length === 0 ? undefined : rule.on_response,
       condition: rule.conditions.reduce((acc, condition) => {
         acc[condition.field] = condition.value; // Asignar cada par clave-valor
         return acc;

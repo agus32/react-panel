@@ -15,7 +15,8 @@ const initialState = [
   {
     id: 1,
     conditions: [{ id: 1, field: fieldsList[0].name, value: "" }],
-    actions: [{ id: 1, schemaKey: Object.keys(schemas)[0], formData: {}, interval: '0s' }]
+    actions: [{ id: 1, schemaKey: Object.keys(schemas)[0], formData: {}, interval: '0s' }],
+    on_response: ""
   }
 ];
 
@@ -26,7 +27,7 @@ export const ActionForm = () => {
   const [nextActionId, setNextActionId] = useState(2);
   const [name, setName] = useState('');
   const [flows, setFlows] = useState([]);
-  const [selectedFlow, setSelectedFlow] = useState("");
+
 
   useEffect(() => {
     const fetchFlows = async () => {
@@ -166,6 +167,15 @@ export const ActionForm = () => {
     }));
   };
 
+  const handleFlowChange = (ruleId, value) => {
+    setConditions(conditions.map(rule => {
+      if (rule.id === ruleId) {
+        return { ...rule, on_response: value };
+      }
+      return rule;
+    }));
+  };
+
   const handleFormDataChange = (ruleId, actionId, newFormData) => {
     setConditions(conditions.map(rule => {
       if (rule.id === ruleId) {
@@ -184,34 +194,18 @@ export const ActionForm = () => {
   };
 
   const handleSubmit = async () => {
-    await PostAction(name, conditions, selectedFlow);
+    await PostAction(name, conditions);
     setConditions(initialState);
     setNextRuleId(2);
     setNextConditionId(2);
     setNextActionId(2);
     setName('');
-    setSelectedFlow("");
   };
 
   return (
     <Form layout="vertical" style={{ marginTop: '20px' }}>
       <Form.Item label="Nombre">
         <Input placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
-      </Form.Item>
-      <Form.Item label="On Response">
-        <Select
-          onChange={(value) => setSelectedFlow(value)}
-          value={selectedFlow}
-          defaultValue={""}
-          style={{ flex: 1 }}
-        >
-          <Option value={""}>Seleccione Flow</Option>
-          {flows.map(flow => (
-            <Option key={flow.uuid} value={flow.uuid}>
-              {flow.name}
-            </Option>
-          ))}
-        </Select>
       </Form.Item>
 
       {conditions.map(rule => (
@@ -221,6 +215,22 @@ export const ActionForm = () => {
             <Button type="primary" danger onClick={() => removeRule(rule.id)}>Delete Rule</Button>
           </div>
 
+          <Form.Item label="On Response">
+            <Select
+              onChange={(value) => handleFlowChange(rule.id, value)}
+              value={rule.selectedFlow}
+              defaultValue=""
+              style={{ flex: 1 }}
+            >
+              <Option value="">Seleccione Flow</Option>
+              {flows.map(flow => (
+                <Option key={flow.uuid} value={flow.uuid}>
+                  {flow.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <label>Conditions</label>
           {rule.conditions.map(condition => (
               <Form.Item key={condition.id} style={{ marginBottom: '10px' }}>
               <Input.Group compact>
@@ -253,7 +263,7 @@ export const ActionForm = () => {
           ))}
 
           <Button type="primary" style={{ marginBottom: '20px'}}onClick={() => addConditionToRule(rule.id)}>+ New Condition</Button>
-
+          
           {rule.actions.map(action => (
             <div key={action.id} style={{ marginBottom: '10px' }}>
               <Form.Item>
