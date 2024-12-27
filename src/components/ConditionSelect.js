@@ -7,6 +7,7 @@ const { Option } = Select;
 
 export const fieldsList = [
     { name: "is_new", type: "select" },
+    { name: "message", type: "input" },
     { name: "nombre", type: "input" },
     { name: "telefono", type: "input" },
     { name: "fuentes", type: "fuentes" },
