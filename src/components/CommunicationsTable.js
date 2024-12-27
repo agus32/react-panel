@@ -14,6 +14,7 @@ const filterInitialState = {
   asesores: [],
   nombre: '',
   telefono: '',
+  message: '',
   fechaDesde: null,
   fechaHasta: null,
   is_new: null,
@@ -167,9 +168,9 @@ export const CommunicationsTable = () => {
 
   const columns = [
     {
-      title: 'Fecha',
-      dataIndex: 'fecha_lead',
-      key: 'fecha_lead',
+      title: 'Mensaje',
+      dataIndex: 'message',
+      key: 'message',
     },
     {
       title: 'Fecha extraccion',      
@@ -394,6 +395,16 @@ export const CommunicationsTable = () => {
                           </Option>
                         ))}
                       </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="Mensaje">
+                      <Input
+                        placeholder="Mensaje"
+                        name="message"
+                        value={filters.message}
+                        onChange={handleInputChange}
+                      />
                     </Form.Item>
                   </Col>
                 </Row>

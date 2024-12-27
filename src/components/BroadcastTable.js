@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GetCommunications,GetFlows,SendBroadcast,GetGlossary,GetAdvisors } from '../ApiHandler';
-import { Table, Button, Input, Select, Form, Row, Col, DatePicker,Pagination} from 'antd';
+import { Table, Button, Input, Select, Form, Row, Col, DatePicker,Pagination, message} from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import Swal from "sweetalert2";
@@ -15,6 +15,7 @@ const filterInitialState = {
     asesores: [],
     nombre: '',
     telefono: '',
+    message: '',
     fechaDesde: null,
     fechaHasta: null,
     is_new: null,
@@ -158,9 +159,9 @@ export const BroadcastTable = () => {
 
   const columns = [
     {
-      title: 'Fecha',
-      dataIndex: 'fecha_lead',
-      key: 'fecha_lead',
+      title: 'Mensaje',
+      dataIndex: 'message',
+      key: 'message',
     },
     {
       title: 'Fecha extraccion',      
@@ -388,6 +389,16 @@ export const BroadcastTable = () => {
                           </Option>
                         ))}
                       </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="Mensaje">
+                      <Input
+                        placeholder="Mensaje"
+                        name="message"
+                        value={filters.message}
+                        onChange={handleInputChange}
+                      />
                     </Form.Item>
                   </Col>
                 </Row>

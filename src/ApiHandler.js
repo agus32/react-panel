@@ -64,6 +64,7 @@ export const GetCommunications = async (filter,page,pageSize) => {
     filter.asesores.length && params.append('asesor_name', filter.asesores.join(','));
     filter.fuentes.length && params.append('fuente', filter.fuentes.join(','));
     filter.nombre.length && params.append('nombre', filter.nombre);
+    filter.message.length && params.append('message', filter.message);
     filter.telefono.length && params.append('telefono', filter.telefono);
     filter.utm_source?.length && params.append('utm_source', filter.utm_source);
     filter.utm_medium?.length && params.append('utm_medium', filter.utm_medium);
@@ -123,6 +124,7 @@ export const SendBroadcast = async (filters,uuid) => {
     asesor_name: filters.asesores.length ? filters.asesores.join(',') : undefined,
     fuente: filters.fuentes.length ? filters.fuentes.join(',') : undefined,
     nombre: filters.nombre.length ? filters.nombre : undefined,
+    message: filters.message.length ? filters.message : undefined,
     telefono: filters.telefono.length ? filters.telefono : undefined,
     is_new: filters.is_new !== null ? filters.is_new : undefined,
     utm_source: filters.utm_source?.length ? filters.utm_source.join(',') : undefined,
