@@ -139,6 +139,13 @@ export const SendBroadcast = async (filters,uuid) => {
 
 };
 
+export const PostScraper = async (portal, mensaje, url) => {
+  return fetchData(`scraper`, "POST", 
+    {portal, 
+    message:mensaje,
+    url_or_filters:url});
+}
+
 export const DeleteFlow = async (uuid) => {
   return fetchData(`flows/${uuid}`, "DELETE");
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GetCommunications,GetFlows,SendBroadcast,GetGlossary,GetAdvisors } from '../ApiHandler';
-import { Table, Button, Input, Select, Form, Row, Col, DatePicker,Pagination, message} from 'antd';
+import { Table, Button, Input, Select, Form, Row, Col, DatePicker,Pagination} from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import Swal from "sweetalert2";
@@ -106,7 +106,7 @@ export const BroadcastTable = () => {
       setFilters(parsedFilters);
       fetchData(1,10,parsedFilters);
     }else fetchData();
-  }, []);
+  });
 
   const handleSendBroadcast = async () => {
     if(!selectedFlow){
