@@ -10,6 +10,8 @@ import { CommunicationsTable } from './components/CommunicationsTable';
 import {GlossaryTable} from './components/GlossaryTable';
 import { LogsTable } from './components/LogsTable';
 import { Container } from 'react-bootstrap';
+import { Cotizacion } from './components/Cotizacion';
+import { BroadcastAction } from './components/BroadcastAction';
 
 function App() {
   return (
@@ -28,6 +30,9 @@ function App() {
           <Route path="/broadcast" element={<BroadcastTable />} />
           <Route path="/glosarioutm" element={<GlossaryTable />} />
           <Route path='/logs' element={<LogsTable/>} />
+          <Route path='/cotizacion' element={<Cotizacion/>} />
+          <Route path='/broadcastaction' element={<BroadcastAction/>} />
+
         </Routes>
         </Container>
       </Router>
