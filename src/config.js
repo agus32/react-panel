@@ -1,3 +1,18 @@
+
+
+export const parseTime = (input) => {
+  const regex = /(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/;
+  const match = input.match(regex);
+
+  if (!match) return "00:00:00";
+
+  const hours = match[1] ? parseInt(match[1]) : 0;
+  const minutes = match[2] ? parseInt(match[2]) : 0;
+  const seconds = match[3] ? parseInt(match[3]) : 0;
+
+  return [hours, minutes, seconds].map((n) => String(n).padStart(2, "0")).join(":");
+};
+
 export const schemas = {
       "infobip.save": {
         name: "infobip.save",
@@ -194,5 +209,4 @@ export const schemas = {
         }
       }
     };
-  
   

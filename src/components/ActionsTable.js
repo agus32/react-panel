@@ -64,6 +64,7 @@ export const ActionsTable = () => {
       render: (record,index) => (
         <Space size="middle">
           <Button type="primary" onClick={() => GoToBroadcast(record.uuid)} style={{ backgroundColor: '#3b82f6', borderColor: '#3b82f6' }}>Send Broadcast</Button>
+          <Button type="primary" onClick={() => navigate(`/acciones/nueva/?edit=${record.uuid}`)} style={{ backgroundColor: '#e6ad27', borderColor: '#e6ad27' }}>Edit</Button>
           <Button type="primary" danger disabled={record.is_main} onClick={() => handleDelete(record.uuid)}>Delete</Button>
         </Space>
       ),

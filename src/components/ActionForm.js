@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Select, TimePicker } from 'antd';
 import { default as JSONSchemaForm } from '@rjsf/antd';
 import validator from '@rjsf/validator-ajv8';
-import { schemas } from '../config';
+import { schemas,parseTime } from '../config';
 import { fieldsList, RenderFieldByType } from './ConditionSelect';
-import { PostAction, GetFlows } from '../ApiHandler';
+import { PostAction, GetFlows,GetOneFlow } from '../ApiHandler';
+import { useSearchParams } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 
@@ -15,7 +17,7 @@ const initialState = [
   {
     id: 1,
     conditions: [{ id: 1, field: fieldsList[0].name, value: "" }],
-    actions: [{ id: 1, schemaKey: Object.keys(schemas)[0], formData: {}, interval: '0s' }],
+    actions: [{ id: 1, schemaKey: Object.keys(schemas)[0], formData: {}, interval: dayjs("00:00:00", 'HH:mm:ss') }],
     on_response: ""
   }
 ];
@@ -27,9 +29,49 @@ export const ActionForm = () => {
   const [nextActionId, setNextActionId] = useState(2);
   const [name, setName] = useState('');
   const [flows, setFlows] = useState([]);
+  // eslint-disable-next-line
+  const [searchParams, setSearchParams] = useSearchParams();
 
 
   useEffect(() => {
+    const editID = searchParams.get('edit');
+    if (editID) {
+      const fetchFlow = async () => {
+        const flw = await GetOneFlow(editID);
+        const data = flw?.data;
+        if (data) {
+          setName(data.name);
+          const rules = data.rules;
+          console.log(rules["actions"])
+          setConditions(rules.map((rule, ruleIndex) => {
+        return {
+          id: ruleIndex + 1,
+          conditions: Object.keys(rule.condition).map((key, index) => {
+            return {
+              id: index + 1,
+              field: key,
+              value: key.includes("fecha") ? dayjs(rule.condition[key],'YYYY-MM-DD') : rule.condition[key]
+            };
+          }),
+          actions: rule.actions.map((action, actionIndex) => {
+            return {
+          id: actionIndex + 1,
+          schemaKey: action.action,
+          formData: action.params || {},
+          interval: dayjs(parseTime(action.interval), 'HH:mm:ss')
+            };
+          }),
+          on_response: rule.on_response || ""
+        };
+          }));
+          console.log('conditions', conditions);
+          setNextRuleId(rules.length + 1);
+          setNextConditionId(rules.reduce((acc, rule) => acc + Object.keys(rule.condition).length, 1));
+          setNextActionId(rules.reduce((acc, rule) => acc + rule.actions.length, 1));
+        }
+      };
+      fetchFlow();
+    }
     const fetchFlows = async () => {
       const flw = await GetFlows();
       const data = flw?.data;
@@ -45,7 +87,7 @@ export const ActionForm = () => {
       {
         id: nextRuleId,
         conditions: [{ id: nextConditionId, field: fieldsList[0].name, value: "" }],
-        actions: [{ id: nextActionId, schemaKey: Object.keys(schemas)[0], formData: {}, interval: '0s' }]
+        actions: [{ id: nextActionId, schemaKey: Object.keys(schemas)[0], formData: {}, interval: dayjs("00:00:00", 'HH:mm:ss') }]
       }
     ]);
     setNextRuleId(nextRuleId + 1);
@@ -194,7 +236,8 @@ export const ActionForm = () => {
   };
 
   const handleSubmit = async () => {
-    await PostAction(name, conditions);
+    const edit = searchParams.get('edit');
+    await PostAction(name, conditions,edit);
     setConditions(initialState);
     setNextRuleId(2);
     setNextConditionId(2);
@@ -218,7 +261,7 @@ export const ActionForm = () => {
           <Form.Item label="On Response">
             <Select
               onChange={(value) => handleFlowChange(rule.id, value)}
-              value={rule.selectedFlow}
+              value={rule.on_response}
               defaultValue=""
               style={{ flex: 1 }}
             >
@@ -277,7 +320,7 @@ export const ActionForm = () => {
                       <Option key={actionName} value={actionName}>{schemas[actionName].name}</Option>
                     ))}
                   </Select>
-                  <TimePicker onChange={(time) => handleTimeChange(rule.id, action.id, time)} />
+                  <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} onChange={(time) => handleTimeChange(rule.id, action.id, time)} value={action.interval}/>
                   <Button type="primary" danger onClick={() => removeActionFromRule(rule.id, action.id)}>Delete Action</Button>
                 </Input.Group>
 

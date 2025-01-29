@@ -150,6 +150,10 @@ export const DeleteFlow = async (uuid) => {
   return fetchData(`flows/${uuid}`, "DELETE");
 };
 
+export const GetOneFlow = async (uuid) => {
+  return fetchData(`flows/${uuid}`, "GET");
+};
+
 export const toggleAdvisorActive = async ( phone,value) => {
   return fetchData(`asesor/${phone}`, "PUT", {active:value});
 };
@@ -173,7 +177,7 @@ export const ReasignAdvisor = async (phone) => {
   return fetchData(`asesor/${phone}/reasign`, "PUT");
 };
 
-export const PostAction = async (name,conditions) => {
+export const PostAction = async (name,conditions,edit) => {
 
   const finalData = {
     name: name,
@@ -190,7 +194,9 @@ export const PostAction = async (name,conditions) => {
       }))
     }))
   };
-
+  if(edit){
+    return fetchData(`flows/${edit}`, "PUT", finalData);
+  }
   return fetchData("flows", "POST", finalData);
 };
 
