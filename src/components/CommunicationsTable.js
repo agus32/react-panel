@@ -4,6 +4,7 @@ import { Table, Button, Input, Select, Form, Row, Col, Space, DatePicker,Paginat
 import { useNavigate } from 'react-router-dom';
 import { exportTableToCSV } from './CsvHandler';
 import Swal from "sweetalert2";
+import {MessageModal} from './MessageModal';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -25,7 +26,18 @@ const filterInitialState = {
   utm_ad: [],
 };
 
-
+const leadInitialState = {
+  id: null,
+  message: '',
+  fecha: '',
+  is_new: false,
+  asesor: {},
+  fuente: '',
+  nombre: '',
+  telefono: '',
+  email: '',
+  utm: {},
+};
 export const CommunicationsTable = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,6 +55,7 @@ export const CommunicationsTable = () => {
   });
   const [filters, setFilters] = useState(filterInitialState);
   const [advisors,setAdvisors]= useState([]);
+  const[modalInfo,setModalInfo]=useState({isVisible:false,data:leadInitialState});
   const navigate = useNavigate();
 
   const fetchData = async (current = null,pageSize=null,filt=null) => {
@@ -166,11 +179,21 @@ export const CommunicationsTable = () => {
     navigate(`/broadcast?${queryParams}`);
   };
 
+  const handleOpenModal = (id) => {
+    const lead = filteredData.find((item) => item.id === id);
+    setModalInfo({isVisible:true,data:lead});
+  };
+
+  const handleCloseModal = () => {
+    setModalInfo({isVisible:false,data:leadInitialState});
+  };
+
   const columns = [
     {
       title: 'Mensaje',
       dataIndex: 'message',
       key: 'message',
+      render: (message) => message ? (message.length > 20 ? message.substring(0, 20) + "..." : message) : "",
     },
     {
       title: 'Fecha extraccion',      
@@ -209,34 +232,17 @@ export const CommunicationsTable = () => {
       key: 'email',
     },
     {
-      title: 'UTM Source',
-      dataIndex: ['utm', 'utm_source'],
-      key: 'utm_source',
-    },
-    {
-      title: 'UTM Medium',
-      dataIndex: ['utm', 'utm_medium'],
-      key: 'utm_medium',
-    },
-    {
-      title: 'UTM Channel',
-      dataIndex: ['utm', 'utm_channel'],
-      key: 'utm_channel',
-    },
-    {
-      title: 'UTM Campaign',
-      dataIndex: ['utm', 'utm_campaign'],
-      key: 'utm_campaign',
-    },
-    {
-      title: 'UTM Ad',
-      dataIndex: ['utm', 'utm_ad'],
-      key: 'utm_ad',
+      title: "Acción",
+      key: "action",
+      render: (text, record) => (
+        <Button type="link" onClick={() => handleOpenModal(record.id)}>+</Button>
+      ),
     },
   ];
 
   return (
     <div style={{ padding: 24 }}>
+        <MessageModal modalInfo={modalInfo} onClose={handleCloseModal}/>
         <div style={{ padding: '16px', border: '1px solid #ddd', borderRadius: '4px', marginBottom: 24 }}>
             <Form layout="vertical">
                 <Row gutter={24}>
