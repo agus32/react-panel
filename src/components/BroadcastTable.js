@@ -120,7 +120,7 @@ export const BroadcastTable = () => {
       setFilters(parsedFilters);
       fetchData(1,10,parsedFilters);
     }else fetchData();
-  });
+  }, []);
 
   const handleSendBroadcast = async () => {
     if(!selectedFlow){
