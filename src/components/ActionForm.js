@@ -5,7 +5,7 @@ import validator from '@rjsf/validator-ajv8';
 import { schemas,parseTime } from '../config';
 import { fieldsList, RenderFieldByType } from './ConditionSelect';
 import { PostAction, GetFlows,GetOneFlow } from '../ApiHandler';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams,useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 const { Option } = Select;
@@ -28,6 +28,7 @@ export const ActionForm = () => {
   const [nextConditionId, setNextConditionId] = useState(2);
   const [nextActionId, setNextActionId] = useState(2);
   const [name, setName] = useState('');
+  const navigate = useNavigate();
   const [flows, setFlows] = useState([]);
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
@@ -237,12 +238,17 @@ export const ActionForm = () => {
 
   const handleSubmit = async () => {
     const edit = searchParams.get('edit');
-    await PostAction(name, conditions,edit);
-    setConditions(initialState);
-    setNextRuleId(2);
-    setNextConditionId(2);
-    setNextActionId(2);
-    setName('');
+    const response = await PostAction(name, conditions,edit);
+    if (response.success){
+      setConditions(initialState);
+      setNextRuleId(2);
+      setNextConditionId(2);
+      setNextActionId(2);
+      setName('');
+      if(edit){
+        navigate('/acciones');
+      }
+    }
   };
 
   return (
