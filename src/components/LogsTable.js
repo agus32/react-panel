@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 
 import Swal from "sweetalert2";
 
+
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
@@ -118,6 +119,7 @@ export const LogsTable = () => {
       title: 'Module',
       dataIndex: 'module',
       key: 'module',
+      render: (module) => <Tag>{module}</Tag>,
     },
     {
       title: 'Message',
@@ -158,6 +160,7 @@ export const LogsTable = () => {
                   <Option value="infobip">infobip</Option>
                   <Option value="flow">flow</Option>
                   <Option value="pipedrive">pipedrive</Option>
+                  <Option value="aircall">aircall</Option>
                 </Select>
               </Form.Item>
             </Col>
