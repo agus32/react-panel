@@ -22,18 +22,18 @@ const handleAlert = (message, type) => {
   });
 };
 
-export const fetchData = async (endpoint, method, body = null) => {
+export const fetchData = async (endpoint, method, body = null, noHeader = false) => {
   const URL = `${HOST}/${endpoint}`;
   const headers = {
     "Content-type": "application/json; charset=UTF-8",
   };
 
-  const requestOptions = {
+  const requestOptions = noHeader ? {method,body} : {
     method,
     headers,
   };
 
-  if (body) {
+  if (body && !noHeader) {
     requestOptions.body = JSON.stringify(body);
   }
 
@@ -203,7 +203,7 @@ export const PostAction = async (name,conditions,edit) => {
 export const PostCSV = async (file) => {
   const formData = new FormData();
   formData.append("csv_file", file);
-  return fetchData(`communication-csv`, "POST", {formData});
+  return fetchData(`communication-csv`, "POST", formData,true);
 };
 
 export const GetGlossary = async () => {
