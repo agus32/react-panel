@@ -8,9 +8,9 @@ export const NavBar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <NavDropdown title="Acciones" id="basic-nav-dropdown" >
-              <NavDropdown.Item href="/acciones/nueva">Nueva Acción</NavDropdown.Item>
-              <NavDropdown.Item href="/acciones">Acciones</NavDropdown.Item>
+            <NavDropdown title="Flows" id="basic-nav-dropdown" >
+              <NavDropdown.Item href="/acciones/nueva">Nuevo Flow</NavDropdown.Item>
+              <NavDropdown.Item href="/acciones">Lista de Flows</NavDropdown.Item>
             </NavDropdown>
             <Nav.Link href="/broadcast" >Broadcast</Nav.Link>
             <Nav.Link href="/comunicaciones">Comunicaciones</Nav.Link>
