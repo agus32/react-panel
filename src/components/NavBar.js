@@ -11,6 +11,7 @@ export const NavBar = () => {
             <NavDropdown title="Flows" id="basic-nav-dropdown" >
               <NavDropdown.Item href="/acciones/nueva">Nuevo Flow</NavDropdown.Item>
               <NavDropdown.Item href="/acciones">Lista de Flows</NavDropdown.Item>
+              <NavDropdown.Item href="/fileuploader">Subir Media</NavDropdown.Item>
             </NavDropdown>
             <Nav.Link href="/broadcast" >Broadcast</Nav.Link>
             <Nav.Link href="/comunicaciones">Comunicaciones</Nav.Link>
