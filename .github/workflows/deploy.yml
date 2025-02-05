@@ -32,4 +32,8 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to Server via SCP
-        run: scp -r build/* ubuntu@${{ secrets.SSH_HOST }}:/home/ubuntu/build
+          run: |
+            ssh ubuntu@${{ secrets.SSH_HOST }} "rm -rf /home/ubuntu/build/*"
+            scp -r build/* ubuntu@${{ secrets.SSH_HOST }}:/home/ubuntu/build/
+      - name: Set permissions
+          run: ssh ubuntu@${{ secrets.SSH_HOST }} "chmod -R 755 /home/ubuntu/build"
