@@ -100,7 +100,9 @@ export const BroadcastTable = () => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     fetchAdvisors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     fetchGlossary();
     const fetchFlows = async () => {
         const flw = await GetFlows();
@@ -118,7 +120,9 @@ export const BroadcastTable = () => {
         fechaHasta: filt.fechaHasta ? dayjs(filt.fechaHasta) : null
       };
       setFilters(parsedFilters);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       fetchData(1,10,parsedFilters);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }else fetchData();
   }, []);
 
