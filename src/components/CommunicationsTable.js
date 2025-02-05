@@ -96,13 +96,10 @@ export const CommunicationsTable = () => {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     fetchAdvisors();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     fetchGlossary();
-  }, []);
+  }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
   const handleExportCSV = () => {
     if (filteredData.length === 0) {

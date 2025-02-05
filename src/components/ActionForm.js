@@ -35,7 +35,6 @@ export const ActionForm = () => {
 
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const editID = searchParams.get('edit');
     if (editID) {
       const fetchFlow = async () => {
@@ -80,7 +79,7 @@ export const ActionForm = () => {
       setFlows(flowsKeys);
     };
     fetchFlows();
-  }, []);
+  }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
   const addRule = () => {
     setConditions([
