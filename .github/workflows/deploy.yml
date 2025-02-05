@@ -32,4 +32,4 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to Server via SCP
-        run: scp -r build/* ubuntu@${{ secrets.SSH_HOST }}:/home/ubuntu
+        run: scp -r build/* ubuntu@${{ secrets.SSH_HOST }}:/home/ubuntu/build
