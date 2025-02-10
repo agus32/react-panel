@@ -158,7 +158,7 @@ export const ActionForm = () => {
       if (rule.id === ruleId) {
         return {
           ...rule,
-          actions: [...rule.actions, { id: nextActionId, schemaKey: Object.keys(schemas)[0], formData: {}, interval: '0s' }]
+          actions: [...rule.actions, { id: nextActionId, schemaKey: Object.keys(schemas)[0], formData: {}, interval: dayjs("00:00:00", 'HH:mm:ss') }]
         };
       }
       return rule;
