@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import dayjs from 'dayjs';
-const HOST = "https://reboraautomatizaciones.com/api";
+export const HOST = "https://reboraautomatizaciones.com/api";
 
 
 

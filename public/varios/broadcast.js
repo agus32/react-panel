@@ -1,5 +1,4 @@
-const HOST = "http://localhost:8080";
-
+import { HOST } from "../../src/ApiHandler";
 window.onload = function(){
     var actions = document.getElementsByClassName("action");
 

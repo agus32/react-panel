@@ -1,5 +1,4 @@
-const HOST = "http://localhost:8081";
-//const HOST = "https://reboraautomatizaciones.com/app";
+import { HOST } from "../../src/ApiHandler";
 
 window.onload = function() {
     document.getElementById("propiedadesInput").value = "";
