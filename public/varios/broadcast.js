@@ -1,4 +1,4 @@
-import { HOST } from "../../src/ApiHandler";
+const HOST = "https://reboraautomatizaciones.com/app";
 window.onload = function(){
     var actions = document.getElementsByClassName("action");
 
