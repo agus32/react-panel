@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Select, TimePicker } from 'antd';
+import { Form, Input, Button, Select, TimePicker} from 'antd';
 import { default as JSONSchemaForm } from '@rjsf/antd';
 import validator from '@rjsf/validator-ajv8';
 import { schemas,parseTime } from '../config';
@@ -111,7 +111,7 @@ export const ActionForm = () => {
 
   const removeConditionFromRule = (ruleId, conditionId) => {
     setConditions(conditions.map(rule => {
-      if (rule.id === ruleId && rule.conditions.length > 1) {
+      if (rule.id === ruleId) {
         return { ...rule, conditions: rule.conditions.filter(condition => condition.id !== conditionId) };
       }
       return rule;
@@ -277,6 +277,7 @@ export const ActionForm = () => {
               ))}
             </Select>
           </Form.Item>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <label>Conditions</label>
           {rule.conditions.map(condition => (
               <Form.Item key={condition.id} style={{ marginBottom: '10px' }}>
@@ -301,16 +302,14 @@ export const ActionForm = () => {
                   type="primary"
                   danger
                   onClick={() => removeConditionFromRule(rule.id, condition.id)}
-                  disabled={rule.conditions.length === 1}
                 >
                   Delete Condition
                 </Button>
               </Input.Group>
             </Form.Item>
           ))}
-
-          <Button type="primary" style={{ marginBottom: '20px'}}onClick={() => addConditionToRule(rule.id)}>+ New Condition</Button>
-          
+          <Button type="primary" style={{ marginBottom: '20px', width:'min-content'}}onClick={() => addConditionToRule(rule.id)}>+ New Condition</Button>
+          </div>
           {rule.actions.map(action => (
             <div key={action.id} style={{ marginBottom: '10px' }}>
               <Form.Item>
