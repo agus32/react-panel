@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Table, Button, Space } from 'antd';
+import { Table, Button, Space, Input } from 'antd';
 import { GetFlows,SetMainFlow,DeleteFlow } from '../ApiHandler';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,8 +7,11 @@ import { useNavigate } from 'react-router-dom';
 
 
 
+
 export const ActionsTable = () => {
   const [flows, setFlows] = useState([]);
+  const [searchName, setSearchName] = useState('');
+  const [filteredFlows, setFilteredFlows] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,12 +22,18 @@ export const ActionsTable = () => {
     navigate(`/broadcast?flow=${uuid}`);
   }
 
+  useEffect(() => {
+    const filtFlows = flows.filter((flow) => flow.name.toLowerCase().includes(searchName.toLowerCase()));
+    setFilteredFlows(filtFlows);
+  }, [searchName,flows]);
+
 
   const fetchFlows = async () => {
     const flw = await GetFlows();
     const data = flw?.data;
     const flowsArray = data ? Object.values(data) : [];
     setFlows(flowsArray);
+    setFilteredFlows(flowsArray);
   };
 
   const handleDelete = async (uuid) => {
@@ -74,9 +83,10 @@ export const ActionsTable = () => {
   return (
     <>
       <h2 style={{ marginTop: 16 }}>Flows</h2>
+      <Input.Search allowClear placeholder="Search by name" onChange={(e) => setSearchName(e.target.value)} style={{marginBottom: 20 }}/>
       <Table
         columns={columns}
-        dataSource={flows}
+        dataSource={filteredFlows}
         rowKey={(record) => record.uuid}
         pagination={{ position: ['bottomCenter'] }}
       />
