@@ -43,7 +43,6 @@ export const ActionForm = () => {
         if (data) {
           setName(data.name);
           const rules = data.rules;
-          console.log(rules["actions"])
           setConditions(rules.map((rule, ruleIndex) => {
         return {
           id: ruleIndex + 1,
@@ -317,7 +316,7 @@ export const ActionForm = () => {
               <Form.Item>
                 <Input.Group compact>
                   <Select
-                    defaultValue={action.schemaKey}
+                    value={action.schemaKey}
                     style={{ width: '30%' }}
                     onChange={(value) => handleSchemaChange(rule.id, action.id, value)}
                   >
