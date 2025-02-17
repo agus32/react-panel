@@ -20,7 +20,6 @@ export const NavBar = () => {
             <Nav.Link href="/glosarioutm">Glosario UTM</Nav.Link> 
             <Nav.Link href="/logs">Logs</Nav.Link>     
             <Nav.Link href="/cotizacion">Cotización</Nav.Link>
-            <Nav.Link href="/broadcastaction">Broadcast Action</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       

@@ -11,7 +11,6 @@ import {GlossaryTable} from './components/GlossaryTable';
 import { LogsTable } from './components/LogsTable';
 import { Container } from 'react-bootstrap';
 import { Cotizacion } from './components/Cotizacion';
-import { BroadcastAction } from './components/BroadcastAction';
 import {FileUploader} from './components/FileUploader';
 
 function App() {
@@ -32,7 +31,6 @@ function App() {
           <Route path="/glosarioutm" element={<GlossaryTable />} />
           <Route path='/logs' element={<LogsTable/>} />
           <Route path='/cotizacion' element={<Cotizacion/>} />
-          <Route path='/broadcastaction' element={<BroadcastAction/>} />
           <Route path='/fileuploader' element={<FileUploader/>} />
         </Routes>
         </Container>
