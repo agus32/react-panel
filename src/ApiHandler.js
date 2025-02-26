@@ -162,6 +162,14 @@ export const GetOneProperty = async (uuid) => {
   return fetchData(`property/${uuid}`, "GET");
 };
 
+export const PostProperty = async (inputs) => {
+  return fetchData("property", "POST", inputs);
+}
+
+export const PutProperty = async (uuid, inputs) => {
+  return fetchData(`property/${uuid}`, "PUT", inputs);
+}
+
 export const DeleteProperty = async (uuid) => {
   return fetchData(`property/${uuid}`, "DELETE");
 };
