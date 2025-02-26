@@ -2,6 +2,7 @@ import React, {useState,useEffect } from "react";
 import { Form, Input, InputNumber, Select, DatePicker, Button } from "antd";
 import {GetOneProperty,PostProperty,PutProperty} from '../ApiHandler';
 import { useSearchParams,useNavigate } from 'react-router-dom';
+import {ImageUploader} from './ImageUploader';
 
 
 const { Option } = Select;
@@ -167,6 +168,8 @@ export const PropertyForm = () => {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
         </div>
+
+        <ImageUploader/>
 
         <Form.Item>
           <Button
