@@ -20,6 +20,10 @@ export const NavBar = () => {
             <Nav.Link href="/glosarioutm">Glosario UTM</Nav.Link> 
             <Nav.Link href="/logs">Logs</Nav.Link>     
             <Nav.Link href="/cotizacion">Cotización</Nav.Link>
+            <NavDropdown title="Propiedades" id="basic-nav-dropdown" >
+              <NavDropdown.Item href="/propiedades/nueva">Nueva Propiedad</NavDropdown.Item>
+              <NavDropdown.Item href="/propiedades">Lista de Propiedades</NavDropdown.Item>
+            </NavDropdown>
           </Nav>
         </Navbar.Collapse>
       

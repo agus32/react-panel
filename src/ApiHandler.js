@@ -154,6 +154,18 @@ export const GetOneFlow = async (uuid) => {
   return fetchData(`flows/${uuid}`, "GET");
 };
 
+export const GetProperties = async () => {
+  return fetchData(`property`, "GET");
+};
+
+export const GetOneProperty = async (uuid) => {
+  return fetchData(`property/${uuid}`, "GET");
+};
+
+export const DeleteProperty = async (uuid) => {
+  return fetchData(`property/${uuid}`, "DELETE");
+};
+
 export const toggleAdvisorActive = async ( phone,value) => {
   return fetchData(`asesor/${phone}`, "PUT", {active:value});
 };

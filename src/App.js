@@ -12,6 +12,8 @@ import { LogsTable } from './components/LogsTable';
 import { Container } from 'react-bootstrap';
 import { Cotizacion } from './components/Cotizacion';
 import {FileUploader} from './components/FileUploader';
+import {PropertiesTable} from './components/PropertiesTable';
+import { PropertyForm } from './components/PropertyForm';
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
           <Route path='/logs' element={<LogsTable/>} />
           <Route path='/cotizacion' element={<Cotizacion/>} />
           <Route path='/fileuploader' element={<FileUploader/>} />
+          <Route path='/propiedades' element={<PropertiesTable/>} />
+          <Route path='/propiedades/nueva' element={<PropertyForm/>} />
         </Routes>
         </Container>
       </Router>
