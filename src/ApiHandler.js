@@ -170,9 +170,25 @@ export const PutProperty = async (uuid, inputs) => {
   return fetchData(`property/${uuid}`, "PUT", inputs);
 }
 
+export const GetPublications = async (uuid) => {
+  return fetchData(`property/${uuid}/publications`, "GET");
+};
+
+export const PostPublications = async (properties) => {
+  return fetchData(`publish`, "POST", {properties});
+};
+
 export const DeleteProperty = async (uuid) => {
   return fetchData(`property/${uuid}`, "DELETE");
 };
+
+export const PostPropertyImage = async (uuid, image) => {
+  return fetchData(`property/${uuid}/image`, "POST", image);
+}
+
+export const DeletePropertyImage = async (uuid,id) => {
+  return fetchData(`property/${uuid}/image/${id}`, "DELETE");
+}
 
 export const toggleAdvisorActive = async ( phone,value) => {
   return fetchData(`asesor/${phone}`, "PUT", {active:value});

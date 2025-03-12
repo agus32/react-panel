@@ -1,16 +1,13 @@
 import { useState } from "react";
-import { Input, message,Modal } from "antd";
+import { Input, message,Modal,Button } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
 
-export const ImageUploader = () => {
-  const [images, setImages] = useState([
-    { url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" }, // Ejemplo inicial
-  ]);
+export const ImageUploader = ({images,setImages,isEditing,deleteImage,addImage}) => {
   const [imageUrl, setImageUrl] = useState("");
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
-  const handleUrlUpload = () => {
+  const handleUrlUpload = async () => {
     if (!imageUrl.trim()) return;
 
     // Validar si la URL es una imagen
@@ -18,35 +15,55 @@ export const ImageUploader = () => {
       message.error("Por favor ingresa una URL válida de imagen.");
       return;
     }
+    if(isEditing){
+      const respose = await addImage(imageUrl);
+      if (!respose) {
+        message.error("Error al agregar imagen desde URL");
+        return;
+      }
 
-    // Agregar nueva imagen al estado manteniendo el formato
-    setImages([...images, { url: imageUrl }]);
+    }
+    !isEditing && setImages([...images, { url: imageUrl }]);
     setImageUrl("");
     message.success("Imagen agregada desde URL");
+    setModalIsVisible(false);
   };
 
-  const handleRemove = (index) => {
+  const handleRemove = async (index) => {
+    if(isEditing){
+      const img = images[index];
+      const response = await deleteImage(img?.id);
+      if (!response) {
+        message.error("Error al eliminar imagen");
+        return;
+      }
+    }
     setImages(images.filter((_, i) => i !== index));
   };
 
   return (
-    <div>
+    <div style={{marginTop:10,marginBottom:20}}>
       {/* Campo para ingresar URL */}
       <Modal 
-        style={{ marginBottom: 10, display: "flex", gap: 8 }}
-        isVisible={modalIsVisible}
+        open={modalIsVisible}
+        title={"Importar desde URL"}
         onCancel={() => setModalIsVisible(false)}
+        onOk={handleUrlUpload}
+        footer={[
+          <Button key="back" onClick={() => setModalIsVisible(false)}>
+            Cancelar
+          </Button>,
+          <Button key="submit" type="primary" disabled={!imageUrl.trim()} onClick={handleUrlUpload}>
+            Agregar
+          </Button>,
+        ]}
       >
         <Input
           placeholder="Pegar URL de imagen"
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
-          onPressEnter={handleUrlUpload}
-          style={{ flex: 1 }}
+          onPressEnter={handleUrlUpload} 
         />
-        <button onClick={handleUrlUpload} disabled={!imageUrl.trim()}>
-          Agregar
-        </button>
       </Modal>
 
       {/* Galería de imágenes */}
@@ -84,25 +101,21 @@ export const ImageUploader = () => {
             />
           </div>
         ))}
-
-        {/* Botón de agregar más imágenes */}
-        {images.length < 8 && (
-          <div
-            onClick={() => setModalIsVisible(true)}
-            style={{
-              width: 100,
-              height: 100,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "2px dashed #ccc",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            <PlusOutlined style={{ fontSize: 24, color: "#aaa" }} />
-          </div>
-        )}
+        <div
+          onClick={() => setModalIsVisible(true)}
+          style={{
+            width: 100,
+            height: 100,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "2px dashed #ccc",
+            borderRadius: 8,
+            cursor: "pointer",
+          }}
+        >
+          <PlusOutlined style={{ fontSize: 24, color: "#aaa" }} />
+        </div>
       </div>
     </div>
   );

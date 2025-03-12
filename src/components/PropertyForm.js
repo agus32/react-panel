@@ -1,8 +1,10 @@
 import React, {useState,useEffect } from "react";
 import { Form, Input, InputNumber, Select, DatePicker, Button } from "antd";
-import {GetOneProperty,PostProperty,PutProperty} from '../ApiHandler';
+import {GetOneProperty,PostProperty,PutProperty,DeletePropertyImage,PostPropertyImage} from '../ApiHandler';
 import { useSearchParams,useNavigate } from 'react-router-dom';
 import {ImageUploader} from './ImageUploader';
+import { MapPicker } from "./MapPicker";
+import dayjs from 'dayjs';
 
 
 const { Option } = Select;
@@ -10,34 +12,58 @@ const { Option } = Select;
 export const PropertyForm = () => {
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
+  const [idEdit, setIdEdit] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [images,setImages] = useState([]);
+  const [ubication,setUbication] = useState({
+    address: "Urquiza 341, A4400 Salta, Argentina",
+    location: {
+      lat: -24.7926769,
+      lng: -65.40786849999999
+    }
+  });
 
   useEffect(() => {
     const editID = searchParams.get('edit');
     if (editID) {
+      setIdEdit(editID);
       const fetchProperty = async () => {
-        const property = await GetOneProperty(editID);
-        console.log("Propiedad a editar:", property.data);
+        const data = await GetOneProperty(editID);
+        const property = data?.data;
         form.setFieldsValue({
-          ...property.data,
-          updated_at: property.updated_at ? dayjs(property.data.updated_at) : null,
-          created_at: property.created_at ? dayjs(property.data.created_at) : null,
+          ...property,
+          updated_at: property.updated_at ? dayjs(property.updated_at) : null,
+          created_at: property.created_at ? dayjs(property.created_at) : null,
         });
+        property.images && setImages(property.images);
+        property.ubication && setUbication(property.ubication);
       };
       fetchProperty();
       setIsEditing(true);
-    }
+    }// eslint-disable-next-line
   }, []);
 
+  const deleteImage = async(id) => {
+    const response = await DeletePropertyImage(idEdit,id);
+    return response?.success
+  }
+
+  const addImage = async(imageUrl) => {
+    const response = await PostPropertyImage(idEdit,[{ url: imageUrl }]);
+    response?.success && setImages([...images,response?.data[0]]);
+    return response?.success
+  }
+
   const onFinish = async (values) => {
+    const prop = {...values,images,ubication};
     if(isEditing){
-      const response = await PutProperty(searchParams.get('edit'),values);
+      const response = await PutProperty(idEdit,prop);
       response.success && navigate('/propiedades');
     }
     else{
-      const response = await PostProperty(values);
-      response.success && form.resetFields();
+      const response = await PostProperty(prop);
+      response.success && form.resetFields() && setImages([]);
     }
   };
 
@@ -149,7 +175,9 @@ export const PropertyForm = () => {
             <InputNumber style={{ width: "100%" }} min={1} />
           </Form.Item>
         </div>
-
+        
+        <MapPicker isEditing={isEditing} ubication={ubication} setUbication={setUbication}/>
+        
         <Form.Item label="URL del Video" name="video_url">
           <Input placeholder="Ingrese la URL del video" style={{ width: "100%" }} />
         </Form.Item>
@@ -168,9 +196,10 @@ export const PropertyForm = () => {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
         </div>
-
-        <ImageUploader/>
-
+        <div>
+          <label>Imágenes</label>
+          <ImageUploader images={images} setImages={setImages} isEditing={isEditing} deleteImage={deleteImage} addImage={addImage}/>
+        </div>
         <Form.Item>
           <Button
             type="primary"

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-google-maps/api": "^2.20.6",
     "@rjsf/antd": "^5.21.1",
     "@rjsf/core": "^5.21.1",
     "@rjsf/utils": "^5.21.1",
