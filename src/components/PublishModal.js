@@ -16,21 +16,26 @@ export const PublishModal = ({ isVisible, onClose,propertyId }) => {
   const [selectedPortals, setSelectedPortals] = useState([]);
   const [property, setProperty] = useState({});
 
-  useEffect(() => {
-    if (isVisible) {
-      setLoading(true);
-      setSelectedPortals([]);
-      Promise.all([
+  const fetchData = async () => {
+    setLoading(true);
+    setSelectedPortals([]);
+    try {
+      const [publications, prop] = await Promise.all([
         GetPublications(propertyId),
         GetOneProperty(propertyId)
-      ])
-        .then(([publications, prop]) => {
-          setPortals(publications?.data);
-          setProperty(prop?.data);
-        })
-        .finally(() => setLoading(false));
+      ]);
+      setPortals(publications?.data);
+      setProperty(prop?.data);
+    } finally {
+      setLoading(false);
     }
-  }, [isVisible,propertyId]);
+  };
+
+  useEffect(() => {
+    if (isVisible) {
+      fetchData();
+    }// eslint-disable-next-line
+  }, [isVisible, propertyId]);
 
   const handleCheckboxChange = (portal, checked) => {
     setSelectedPortals((prev) =>
@@ -45,6 +50,7 @@ export const PublishModal = ({ isVisible, onClose,propertyId }) => {
     await PostPublications(
       selectedPortals.map((portal) => ({ property_id: propertyId, portal }))
     );
+    await fetchData();
     setLoading(false);
   };
 
@@ -79,9 +85,14 @@ export const PublishModal = ({ isVisible, onClose,propertyId }) => {
           );
         }}
       />
-      <Typography.Text type="secondary">
-        Publishing may take a few minutes
-      </Typography.Text>
+      <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between" }} >
+        <Typography.Text type="secondary">
+          Publishing may take a few minutes
+        </Typography.Text>
+        <Button color="primary" variant="outlined" onClick={fetchData} style={{ marginRight: 8 }}>
+          Refresh ⟳
+        </Button>
+      </div>
       <div style={{ textAlign: "right", marginTop: 16 }}>
         <Button onClick={onClose} style={{ marginRight: 8 }}>
           Cancel

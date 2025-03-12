@@ -114,7 +114,7 @@ export const PropertyForm = () => {
           </Form.Item>
         </div>
 
-        <Form.Item label="Descripción" name="description">
+        <Form.Item label="Descripción" name="description" rules={[{ required: true, message: "Campo obligatorio" }]}>
           <Input.TextArea rows={3} placeholder="Ingrese una descripción" style={{ width: "100%" }} />
         </Form.Item>
 
@@ -159,7 +159,7 @@ export const PropertyForm = () => {
           rules={[{ required: true }]}
         >
           <Select placeholder="Seleccione operación" style={{ width: "100%" }}>
-            <Option value="sale">Venta</Option>
+            <Option value="sell">Venta</Option>
             <Option value="rent">Renta</Option>
             <Option value="vacation">Vacacional</Option>
           </Select>
