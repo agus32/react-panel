@@ -17,10 +17,10 @@ export const PropertyForm = () => {
   const [searchParams] = useSearchParams();
   const [images,setImages] = useState([]);
   const [ubication,setUbication] = useState({
-    address: "Urquiza 341, A4400 Salta, Argentina",
+    address: "",
     location: {
-      lat: -24.7926769,
-      lng: -65.40786849999999
+      lat: 24,
+      lng: -103.5
     }
   });
 
