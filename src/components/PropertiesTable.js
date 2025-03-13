@@ -15,7 +15,7 @@ export const PropertiesTable = () => {
   const [searchName, setSearchName] = useState('');
   const [filteredProperties, setFilteredProperties] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [propertyId, setPropertyId] = useState(0);
+  const [propertyIds, setPropertyIds] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const PropertiesTable = () => {
   }, []);
 
   const handlePublishModal = (id) => {
-    setPropertyId(id);
+    setPropertyIds([id]);
     setIsModalVisible(true);
   }
 
@@ -57,6 +57,11 @@ export const PropertiesTable = () => {
     });
     
   }
+  const rowSelection = {
+    onChange: (selectedRowKeys) => {
+      setPropertyIds(selectedRowKeys);
+    },
+  };
 
 
   const columns = [
@@ -98,12 +103,17 @@ export const PropertiesTable = () => {
   return (
     <>
       <h2 style={{ marginTop: 16 }}>Properties</h2>
-      <PublishModal isVisible={isModalVisible} propertyId={propertyId} onClose={() => setIsModalVisible(false)}/>
+      <PublishModal isVisible={isModalVisible} propertyIds={propertyIds} onClose={() => setIsModalVisible(false)}/>
       <Input.Search allowClear placeholder="Search by title" onChange={(e) => setSearchName(e.target.value)} style={{marginBottom: 20 }}/>
+      <Button type="primary" style={{marginBottom: 5 }} disabled={propertyIds.length < 2} onClick={() => setIsModalVisible(true)}>Publish Selected</Button>
       <Table
         columns={columns}
+        rowSelection={{
+          type: 'checkbox',
+          ...rowSelection,
+        }}
         dataSource={filteredProperties}
-        rowKey={(record) => record.uuid}
+        rowKey={(record) => record.id}
         pagination={{ position: ['bottomCenter'] }}
       />
     </>
