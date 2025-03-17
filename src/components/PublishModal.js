@@ -7,6 +7,7 @@ const STATUS_MAP = {
   published: { label: "Published", color: "green", icon: <CheckCircleOutlined /> },
   not_published: { label: "Not published", color: "gray" },
   in_progress: { label: "Publishing in progress...", color: "orange", icon: <Spin /> },
+  in_queue: { label: "In queue", color: "gray", icon: <Spin /> },
   failed: { label: "Failed to publish", color: "red", icon: <CloseCircleOutlined /> },
 };
 
