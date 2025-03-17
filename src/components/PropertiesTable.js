@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import { Table, Button, Space, Input,Tag } from 'antd';
-import { GetProperties,DeleteProperty } from '../ApiHandler';
+import { GetProperties,DeleteProperty,PostCSV } from '../ApiHandler';
 import { useNavigate } from 'react-router-dom';
 import {ShareAltOutlined,EditOutlined,DeleteOutlined} from '@ant-design/icons';
 import { PublishModal } from './PublishModal';
@@ -26,6 +26,30 @@ export const PropertiesTable = () => {
     setPropertyIds([id]);
     setIsModalVisible(true);
   }
+
+  const handleImportCSV = async () => {
+      const { value: file } = await Swal.fire({
+        title: "Importar CSV",
+        text: "Seleccione un archivo CSV",
+        input: "file",
+        inputAttributes: {
+          accept: ".csv",
+        },
+        showCancelButton: true,
+        confirmButtonText: "Subir",
+        cancelButtonText: "Cancelar",
+      });
+    
+      if (file) {
+        await PostCSV(file,"properties/csv");
+      } else {
+        Swal.fire({
+          icon: "info",
+          title: "Cancelado",
+          text: "No se seleccionó ningún archivo.",
+        });
+      }
+    };
 
   useEffect(() => {
     const filtProperties = properties.filter((property) => property?.title.toLowerCase().includes(searchName.toLowerCase()));
@@ -105,7 +129,10 @@ export const PropertiesTable = () => {
       <h2 style={{ marginTop: 16 }}>Properties</h2>
       <PublishModal isVisible={isModalVisible} propertyIds={propertyIds} onClose={() => setIsModalVisible(false)}/>
       <Input.Search allowClear placeholder="Search by title" onChange={(e) => setSearchName(e.target.value)} style={{marginBottom: 20 }}/>
-      <Button type="primary" style={{marginBottom: 5 }} disabled={propertyIds.length < 2} onClick={() => setIsModalVisible(true)}>Publish Selected</Button>
+      <div style={{marginBottom: 5 , display: 'flex', justifyContent: 'space-between'}}>
+      <Button type="primary"  disabled={propertyIds.length < 2} onClick={() => setIsModalVisible(true)}>Publish Selected</Button>
+      <Button type="primary" onClick={handleImportCSV}>Import CSV</Button>
+      </div>
       <Table
         columns={columns}
         rowSelection={{

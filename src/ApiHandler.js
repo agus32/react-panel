@@ -236,10 +236,10 @@ export const PostAction = async (name,conditions,edit) => {
   return fetchData("flows", "POST", finalData);
 };
 
-export const PostCSV = async (file) => {
+export const PostCSV = async (file,endpoint) => {
   const formData = new FormData();
   formData.append("csv_file", file);
-  return fetchData(`communication-csv`, "POST", formData,true);
+  return fetchData(endpoint, "POST", formData,true);
 };
 
 export const GetGlossary = async () => {

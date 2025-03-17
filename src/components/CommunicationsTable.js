@@ -125,7 +125,7 @@ export const CommunicationsTable = () => {
     });
   
     if (file) {
-      await PostCSV(file);
+      await PostCSV(file,"communication-csv");
     } else {
       Swal.fire({
         icon: "info",
