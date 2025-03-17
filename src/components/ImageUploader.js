@@ -11,7 +11,7 @@ export const ImageUploader = ({images,setImages,isEditing,deleteImage,addImage})
     if (!imageUrl.trim()) return;
 
     // Validar si la URL es una imagen
-    if (!imageUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
+    if (!imageUrl.match(/\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i)) {
       message.error("Por favor ingresa una URL válida de imagen.");
       return;
     }

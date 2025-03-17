@@ -63,7 +63,13 @@ export const PropertyForm = () => {
     }
     else{
       const response = await PostProperty(prop);
-      response.success && form.resetFields() && setImages([]);
+      response.success && form.resetFields() && setImages([]) && setUbication({
+        address: "",
+        location: {
+          lat: 24,
+          lng: -103.5
+        }
+      });
     }
   };
 
