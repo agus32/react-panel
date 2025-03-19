@@ -80,7 +80,7 @@ export const GetCommunications = async (filter,page,pageSize) => {
   }
   
   const queryParams = toQueryParams(filter);
-  return fetchData(`communications${queryParams}`, "GET");
+  return fetchData(`communication${queryParams}`, "GET");
 };
 
 export const GetAdvisors = async () => {
