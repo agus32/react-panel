@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import dayjs from 'dayjs';
 export const HOST = "https://reboraautomatizaciones.com/api";
-
+const APP_HOST = "https://reboraautomatizaciones.com/app";
 
 
 
@@ -22,8 +22,8 @@ const handleAlert = (message, type) => {
   });
 };
 
-export const fetchData = async (endpoint, method, body = null, noHeader = false) => {
-  const URL = `${HOST}/${endpoint}`;
+export const fetchData = async (endpoint, method, body = null, noHeader = false,host = HOST) => {
+  const URL = `${host}/${endpoint}`;
   const headers = {
     "Content-type": "application/json; charset=UTF-8",
   };
@@ -257,3 +257,11 @@ export const PutGlossary = async (id, item) => {
 export const DeleteGlossary = async (id) => {
   return fetchData(`utm/${id}`, "DELETE");
 };
+
+export const PostCotizacion = async (cliente,asesor,urls) => {
+  return fetchData(`cotizacion`, "POST", {
+    asesor,
+    cliente,
+    urls: urls.split("\n").map(url => url.trim()).filter(url => url !== "")
+  },false,APP_HOST);
+}
