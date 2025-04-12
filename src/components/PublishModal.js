@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, List, Checkbox, Button, Typography, Card, Spin } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import { GetPublications, PostPublications, GetOneProperty } from "../ApiHandler";
+import { GetPublications, PostPublications, GetOneProperty,UnpublishPublications } from "../ApiHandler";
 
 const STATUS_MAP = {
   published: { label: "Published", color: "green", icon: <CheckCircleOutlined /> },
@@ -19,7 +19,22 @@ const HARCODED_PORTALS = [
   { portal: "propiedades", status: "not_published" },
 ];
 
-export const PublishModal = ({ isVisible, onClose, propertyIds }) => {
+const MESSAGES = {
+  publish: {
+    title: "Publish to Portals",
+    subtitle: "Select the portals you want to publish to.",
+    actionButton: "Publish Selected",
+    infoNote: "Publishing may take a few minutes",
+  },
+  unpublish: {
+    title: "Unpublish from Portals",
+    subtitle: "Select the portals you want to unpublish from.",
+    actionButton: "Unpublish Selected",
+    infoNote: "Unpublishing may take a few minutes",
+  },
+};
+
+export const PublishModal = ({ isVisible, onClose, propertyIds,isPublishing }) => {
   const [properties, setProperties] = useState([]);
   const [portals, setPortals] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,13 +42,19 @@ export const PublishModal = ({ isVisible, onClose, propertyIds }) => {
 
   const isMultiple = propertyIds.length > 1;
 
+  const mode = isPublishing ? 'publish' : 'unpublish';
+  const msg = MESSAGES[mode];
+
   const fetchData = async () => {
+    console.log(propertyIds);
     setLoading(true);
     setSelectedPortals([]);
     try {
       if (isMultiple) {
         // Si hay varias propiedades, solo obtenemos sus detalles sin publicaciones
+        console.log(propertyIds);
         const propertyData = await Promise.all(propertyIds.map(GetOneProperty));
+        console.log(propertyData);
         setProperties(propertyData.map((prop) => prop?.data));
         setPortals(HARCODED_PORTALS);
       } else {
@@ -65,11 +86,14 @@ export const PublishModal = ({ isVisible, onClose, propertyIds }) => {
   const handlePublish = async () => {
     if (selectedPortals.length === 0) return;
     setLoading(true);
-    await PostPublications(
-      propertyIds.flatMap((propertyId) =>
-        selectedPortals.map((portal) => ({ property_id: propertyId, portal }))
-      )
-    );
+    const payload = propertyIds.flatMap((propertyId) =>
+      selectedPortals.map((portal) => ({ property_id: propertyId, portal }))
+    )
+    if (isPublishing) {
+      await PostPublications(payload);
+    } else {
+      await UnpublishPublications(payload); // Asumiendo que esta función ya está definida
+    }
     await fetchData();
     setLoading(false);
   };
@@ -80,10 +104,11 @@ export const PublishModal = ({ isVisible, onClose, propertyIds }) => {
       onCancel={onClose}
       footer={null}
     >
-      <Typography.Title level={4}>Publish to Portals</Typography.Title>
+      <Typography.Title level={4}>{msg.title}</Typography.Title>
       {properties.map((property) => (
         <div key={property.id}>
           <Typography.Title level={5}>Property: {property?.title}</Typography.Title>
+          <Typography.Paragraph type="secondary">{msg.subtitle}</Typography.Paragraph>
           <Typography.Text type="secondary">{property?.description?.slice(0,80)}</Typography.Text>
         </div>
       ))}
@@ -114,7 +139,7 @@ export const PublishModal = ({ isVisible, onClose, propertyIds }) => {
         
       <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between" }}>
         <Typography.Text type="secondary">
-          Publishing may take a few minutes
+          {msg.infoNote}
         </Typography.Text>
         <Button color="primary" variant="outlined" onClick={fetchData} style={{ marginRight: 8 }}>
           Refresh ⟳
@@ -129,7 +154,7 @@ export const PublishModal = ({ isVisible, onClose, propertyIds }) => {
           onClick={handlePublish}
           disabled={loading || selectedPortals.length === 0}
         >
-          Publish Selected
+          {msg.actionButton}
         </Button>
       </div>
     </Modal>

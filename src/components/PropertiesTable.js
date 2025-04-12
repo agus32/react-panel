@@ -16,14 +16,24 @@ export const PropertiesTable = () => {
   const [filteredProperties, setFilteredProperties] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [propertyIds, setPropertyIds] = useState([]);
+  const [isPublishing, setIsPublishing] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchProperties();
   }, []);
 
-  const handlePublishModal = (id) => {
-    setPropertyIds([id]);
+  const handleUnicPublishModal = (id) => {
+    setIsPublishing(true);
+    setPropertyIds([id]);  
+    setIsModalVisible(true);
+  }
+  const handlePublishModal = () => {
+    setIsPublishing(true);
+    setIsModalVisible(true);
+  }
+  const handleUnpublishModal = () => {
+    setIsPublishing(false);
     setIsModalVisible(true);
   }
 
@@ -116,7 +126,7 @@ export const PropertiesTable = () => {
       key: 'actions',
       render: (record,index) => (
         <Space size="small" key={index}>
-          <Button color="default" variant="text" onClick={() => handlePublishModal(record.id)}><ShareAltOutlined /></Button>
+          <Button color="default" variant="text" onClick={() => handleUnicPublishModal(record.id)}><ShareAltOutlined /></Button>
           <Button color="default" variant="text" onClick={() => navigate(`/propiedades/nueva/?edit=${record.id}`)}><EditOutlined /></Button>
           <Button color="default" variant="text" danger disabled={record.is_main} onClick={() => handleDelete(record.id)}><DeleteOutlined /></Button>
         </Space>
@@ -127,10 +137,13 @@ export const PropertiesTable = () => {
   return (
     <>
       <h2 style={{ marginTop: 16 }}>Properties</h2>
-      <PublishModal isVisible={isModalVisible} propertyIds={propertyIds} onClose={() => setIsModalVisible(false)}/>
+      <PublishModal isVisible={isModalVisible} propertyIds={propertyIds} onClose={() => setIsModalVisible(false)} isPublishing={isPublishing}/>
       <Input.Search allowClear placeholder="Search by title" onChange={(e) => setSearchName(e.target.value)} style={{marginBottom: 20 }}/>
       <div style={{marginBottom: 5 , display: 'flex', justifyContent: 'space-between'}}>
-      <Button type="primary"  disabled={propertyIds.length < 2} onClick={() => setIsModalVisible(true)}>Publish Selected</Button>
+      <div style={{display: 'flex', gap: 5}}>
+        <Button type="primary"  disabled={propertyIds.length < 2} onClick={handlePublishModal}>Publish Selected</Button>
+        <Button type="primary" danger disabled={propertyIds.length < 1} onClick={handleUnpublishModal}>Unpublish Selected</Button>
+      </div>
       <Button type="primary" onClick={handleImportCSV}>Import CSV</Button>
       </div>
       <Table

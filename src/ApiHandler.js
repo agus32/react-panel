@@ -178,6 +178,10 @@ export const PostPublications = async (properties) => {
   return fetchData(`publish`, "POST", {properties});
 };
 
+export const UnpublishPublications = async (properties) => {
+  return fetchData(`unpublish`, "POST", {properties});
+};
+
 export const DeleteProperty = async (uuid) => {
   return fetchData(`property/${uuid}`, "DELETE");
 };
@@ -265,3 +269,4 @@ export const PostCotizacion = async (cliente,asesor,urls) => {
     urls: urls.split("\n").map(url => url.trim()).filter(url => url !== "")
   },false,APP_HOST);
 }
+
