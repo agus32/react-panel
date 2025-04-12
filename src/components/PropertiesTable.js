@@ -108,6 +108,7 @@ export const PropertiesTable = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+      render: (text) => (text.length > 120 ? `${text.substring(0, 120)}...` : text),
     },
     {
       title: 'Price',
