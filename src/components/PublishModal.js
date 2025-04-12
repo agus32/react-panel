@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, List, Checkbox, Button, Typography, Card, Spin } from "antd";
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, LinkOutlined} from "@ant-design/icons";
 import { GetPublications, PostPublications, GetOneProperty,UnpublishPublications } from "../ApiHandler";
 
 const STATUS_MAP = {
@@ -11,6 +11,12 @@ const STATUS_MAP = {
   failed: { label: "Failed to publish", color: "red", icon: <CloseCircleOutlined /> },
 };
 
+const portalMap = () => ({
+  propiedades: (id) => `https://propiedades.com/inmuebles/-${id}`,
+  lamudi: (id) => `https://www.lamudi.com.mx/detalle/${id}`,
+  casasyterrenos: (id) => `https://www.casasyterrenos.com/propiedad/-${id}`,
+  inmuebles24: (id) => `https://www.inmuebles24.com/propiedades/-${id}`,// no es este pero lo pongo para probar
+});
 
 const HARCODED_PORTALS = [
   { portal: "casasyterrenos", status: "not_published" },
@@ -105,10 +111,10 @@ export const PublishModal = ({ isVisible, onClose, propertyIds,isPublishing }) =
       footer={null}
     >
       <Typography.Title level={4}>{msg.title}</Typography.Title>
+      <Typography.Paragraph type="secondary">{msg.subtitle}</Typography.Paragraph>
       {properties.map((property) => (
         <div key={property.id}>
-          <Typography.Title level={5}>Property: {property?.title}</Typography.Title>
-          <Typography.Paragraph type="secondary">{msg.subtitle}</Typography.Paragraph>
+          <Typography.Title level={5}>Property: {property?.title}</Typography.Title>          
           <Typography.Text type="secondary">{property?.description?.slice(0,80)}</Typography.Text>
         </div>
       ))}
@@ -120,16 +126,31 @@ export const PublishModal = ({ isVisible, onClose, propertyIds,isPublishing }) =
             return (
               <List.Item style={{ padding: 2, display: "flex", justifyContent: "space-between", borderBottom: "none" }}>
                 <Card style={{ width: "100%" }}>
-                  <Checkbox
-                    disabled={item.status === "published" || item.status === "in_progress"}
-                    onChange={(e) => handleCheckboxChange(item.portal, e.target.checked)}
-                    checked={selectedPortals.includes(item.portal)}
-                  />
-                  <Typography.Text strong>{item.portal}</Typography.Text>
-                  <div style={{ marginTop: 5 }}>
-                    <Typography.Text type="secondary" style={{ color: status.color }}>
-                      {status.icon} {status.label}
-                    </Typography.Text>
+                  <div style={{display: "flex", justifyContent: "space-between"}}>
+                    <div>
+                      <Checkbox
+                        disabled={item.status === "published" || item.status === "in_progress"}
+                        onChange={(e) => handleCheckboxChange(item.portal, e.target.checked)}
+                        checked={selectedPortals.includes(item.portal)}
+                      />{" "}
+                      <Typography.Text strong>{item.portal}</Typography.Text>
+                      <div style={{ marginTop: 5 }}>
+                        <Typography.Text type="secondary" style={{ color: status.color }}>
+                          {status.icon} {status.label}
+                        </Typography.Text>
+                      </div>
+                    </div>
+                  {!isMultiple && item.status === "published" && item.portal &&(
+                    <div>
+                      <Button
+                        color="default"
+                        variant="text"
+                        size="small"
+                        icon={<LinkOutlined />}
+                        onClick={() => window.open(portalMap()[item.portal](properties[0]?.publication_id), "_blank")}
+                      />
+                    </div>
+                  )}
                   </div>
                 </Card>
               </List.Item>

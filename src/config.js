@@ -1,4 +1,22 @@
+export const formatCurrency = (value, currency) =>{
+  const currencySymbols = {
+    mxn: 'MX$',
+    usd: 'US$',
+    eur: '€'
+  };
 
+  const symbol = currencySymbols[currency.toLowerCase()];
+  
+  const formattedNumber = new Intl.NumberFormat('de-DE', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
+
+  if (!symbol) {
+    return formattedNumber;
+  }
+  return `${symbol} ${formattedNumber}`;
+}
 
 export const parseTime = (input) => {
   const regex = /(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/;

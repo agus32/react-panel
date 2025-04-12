@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import { Table, Button, Space, Input,Tag } from 'antd';
 import { GetProperties,DeleteProperty,PostCSV } from '../ApiHandler';
+import { formatCurrency } from '../config';
 import { useNavigate } from 'react-router-dom';
 import {ShareAltOutlined,EditOutlined,DeleteOutlined} from '@ant-design/icons';
 import { PublishModal } from './PublishModal';
@@ -114,9 +115,12 @@ export const PropertiesTable = () => {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
+      render: (text, record) => (
+        <span>{formatCurrency(text, record.currency)}</span>
+      ),
     },
     {
-      title: 'Portals',
+      title: 'Type',
       key: 'type',
       render: (record) => (
         <Tag color='success'> {record.type} </Tag>
