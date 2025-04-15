@@ -147,7 +147,7 @@ export const PublishModal = ({ isVisible, onClose, propertyIds,isPublishing }) =
                         variant="text"
                         size="small"
                         icon={<LinkOutlined />}
-                        onClick={() => window.open(portalMap()[item.portal](properties[0]?.publication_id), "_blank")}
+                        onClick={() => window.open(portalMap()[item.portal](item.publication_id), "_blank")}
                       />
                     </div>
                   )}
