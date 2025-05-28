@@ -63,6 +63,7 @@ export const schemas = {
             SendWppMedia: {
               oneOf: [
                 {
+                  title: "Image",
                   properties: {
                     image: { $ref: "#/$defs/MediaPayload" }
                   },
@@ -70,6 +71,7 @@ export const schemas = {
                   additionalProperties: false
                 },
                 {
+                  title: "Video",
                   properties: {
                     video: { $ref: "#/$defs/MediaPayload" }
                   },

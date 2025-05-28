@@ -7,6 +7,7 @@ import { fieldsList, RenderFieldByType } from './ConditionSelect';
 import { PostAction, GetFlows,GetOneFlow } from '../ApiHandler';
 import { useSearchParams,useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { Container } from 'react-bootstrap';
 
 const { Option } = Select;
 
@@ -311,9 +312,9 @@ export const ActionForm = () => {
           <Button type="primary" style={{ marginBottom: '20px', width:'min-content'}}onClick={() => addConditionToRule(rule.id)}>+ New Condition</Button>
           </div>
           {rule.actions.map(action => (
-            <div key={action.id} style={{ marginBottom: '10px' }}>
+            <div key={action.id} >
               <Form.Item>
-                <Input.Group compact>
+                <Input.Group compact style={{ marginBottom: '15px' }}>
                   <Select
                     value={action.schemaKey}
                     style={{ width: '30%' }}
@@ -326,18 +327,19 @@ export const ActionForm = () => {
                   <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} onChange={(time) => handleTimeChange(rule.id, action.id, time)} value={action.interval}/>
                   <Button type="primary" danger onClick={() => removeActionFromRule(rule.id, action.id)}>Delete Action</Button>
                 </Input.Group>
-
-                <JSONSchemaForm
-                  schema={schemas[action.schemaKey].schema || {}}
-                  formData={action.formData}
-                  onChange={(e) => handleFormDataChange(rule.id, action.id, e.formData)}
-                  validator={validator}
-                  uiSchema={{
-                    'ui:submitButtonOptions': {
-                      norender: true,
-                    },
-                  }}
-                />
+                <Container>
+                  <JSONSchemaForm
+                    schema={schemas[action.schemaKey].schema || {}}
+                    formData={action.formData}
+                    onChange={(e) => handleFormDataChange(rule.id, action.id, e.formData)}
+                    validator={validator}
+                    uiSchema={{
+                      'ui:submitButtonOptions': {
+                        norender: true,
+                      },
+                    }}
+                  />
+                </Container>
               </Form.Item>
             </div>
           ))}
