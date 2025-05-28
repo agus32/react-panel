@@ -337,6 +337,9 @@ export const ActionForm = () => {
                       'ui:submitButtonOptions': {
                         norender: true,
                       },
+                      text: {
+                        "ui:widget": "textarea",
+                      }                
                     }}
                   />
                 </Container>
